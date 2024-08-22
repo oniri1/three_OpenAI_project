@@ -1,4 +1,13 @@
+import { useMemo, useState } from "react";
+import { InterviewHistory } from "./interviews";
+
 export const FeedBack = (): JSX.Element => {
+  const [historyValues, setHistoryValues] = useState<[]>();
+
+  const historys: JSX.Element[] | undefined = useMemo(() => {
+    return historyValues?.map((history) => <InterviewHistory />);
+  }, []);
+
   return (
     <section
       id="feedback"

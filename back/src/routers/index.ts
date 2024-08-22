@@ -1,17 +1,7 @@
 import { Router, Request, Response } from "express";
+import AI from "./AIRouter";
 const router = Router();
 
-const result: string[] = [];
-
-router.get("/api", (req: Request, res: Response) => {
-  console.log("geted");
-  res.json(result);
-});
-
-router.post("/api", (req: Request, res: Response) => {
-  console.log("posted");
-  result.push("dumi");
-  res.json("ok Posted");
-});
+router.use("/AI", AI);
 
 export default router;

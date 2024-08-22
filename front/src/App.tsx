@@ -7,11 +7,10 @@ import {
   Dashboard,
   UserProFile,
   Interview,
-  InterviewHistory,
   InterviewStart,
 } from "./Comps/main";
 
-const App = () => {
+const App = (): JSX.Element => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Header></Header>
