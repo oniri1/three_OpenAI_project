@@ -1,21 +1,23 @@
 import { config } from "dotenv";
 config();
 
-export const interViewAiId: string | undefined = process.env.INTERVIEWER_AI_ID;
+const env: { [key: string]: string | undefined } = {
+  interViewAiId: process.env.INTERVIEWER_AI_ID,
+  aiKey: process.env.AIKEY,
+  orgId: process.env.ORGANI_ID,
+  pjtId: process.env.PROJECT_ID,
+  mysqlHost: process.env.MYSQL_HOST,
+  mysqlUser: process.env.MYSQL_USER,
+  mysqlPWD: process.env.MYSQL_PASSWORD,
+  mysqlDBName: process.env.MYSQL_DATABASE,
+  mongodbPort: process.env.MONGODBPORT,
+  mongodbName: process.env.MONGODBNAME,
+};
 
-export const aiKey: string | undefined = process.env.AIKEY;
-export const orgId: string | undefined = process.env.ORGANI_ID;
-export const pjtId: string | undefined = process.env.PROJECT_ID;
+export default env;
 
-if (interViewAiId === undefined) {
-  throw new Error("InterViewAiID undefined");
-}
-if (aiKey === undefined) {
-  throw new Error("AiKey undefined");
-}
-if (orgId === undefined) {
-  throw new Error("OrgId undefined");
-}
-if (pjtId === undefined) {
-  throw new Error("PjtId undefined");
-}
+Object.entries(env).forEach(([key, value]) => {
+  if (value === undefined) {
+    throw new Error(`${key} is ${value}`);
+  }
+});

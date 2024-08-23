@@ -25,6 +25,9 @@ export const Interview = (): JSX.Element => {
     mutationFn: async () => {
       return getInterViewResult({ ai: ai, user: user });
     },
+    onSuccess: () => {
+      setUserRes(undefined);
+    },
   });
 
   useEffect(() => {
@@ -52,39 +55,47 @@ export const Interview = (): JSX.Element => {
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           <div className="flex-1">
             <ul className="list-disc pl-5 space-y-2 mt-1">
-              <li>
-                {isPending ? (
-                  <div className="text-blue-500 hover:underline">
+              {isPending ? (
+                <li>
+                  <div className="text-blue-500 font-semibold">
                     질문 생성중...
                   </div>
-                ) : (
-                  data && (
-                    <div className="text-blue-500 hover:underline">{ai}</div>
-                  )
-                )}
-              </li>
+                </li>
+              ) : ai ? (
+                data && (
+                  <li>
+                    <div className="text-blue-500 font-semibold">{ai}</div>
+                  </li>
+                )
+              ) : (
+                <li>
+                  <div className="text-blue-500 font-semibold">
+                    server Error
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
           {data && (
             <div className="flex-1">
               <h3 className="text-md md:text-lg font-medium">당신의 대답은?</h3>
               <div className="mt-2 md:mt-4 p-4 border border-gray-300 rounded-lg">
-                <textarea
-                  onChange={({ target }: ChangeEvent<HTMLTextAreaElement>) => {
+                <input
+                  onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
                     setUserRes(target.value);
                   }}
-                  onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
+                  onKeyUp={(event: KeyboardEvent<HTMLInputElement>) => {
                     if (event.key === "Enter") {
                       event.preventDefault();
-                      mutate();
+                      if (user) mutate();
                     }
                   }}
                   className="w-full mt-2 p-2 border border-gray-300 rounded-lg"
                   placeholder="어떻게 대답해야 할까?"
-                ></textarea>
+                ></input>
                 <button
                   onClick={() => {
-                    mutate();
+                    if (user) mutate();
                   }}
                   className="mt-2 md:mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 w-full md:w-auto"
                 >

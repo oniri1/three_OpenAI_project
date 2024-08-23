@@ -1,7 +1,8 @@
 import { IChatWithAI } from "../interface/I_AI";
 
 import OpenAI from "openai";
-import { interViewAiId, aiKey, orgId, pjtId } from "../dotenv/dotenv";
+import env from "../dotenv/dotenv";
+const { interViewAiId, aiKey, orgId, pjtId } = env;
 
 const openAIModel = new OpenAI({
   apiKey: aiKey,
