@@ -12,12 +12,13 @@ const env: { [key: string]: string | undefined } = {
   mysqlDBName: process.env.MYSQL_DATABASE,
   mongodbPort: process.env.MONGODBPORT,
   mongodbName: process.env.MONGODBNAME,
+  sessionKey: process.env.SESSION_KEY,
 };
-
-export default env;
 
 Object.entries(env).forEach(([key, value]) => {
   if (value === undefined) {
     throw new Error(`${key} is ${value}`);
   }
 });
+
+export default env;

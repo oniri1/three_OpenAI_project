@@ -1,6 +1,8 @@
 import axios from "axios";
 import { IMsgs } from "../interFace/interViewAi";
-import { serverUrl, AIUrl } from "../../envs";
+import env from "../../envs";
+
+const { serverUrl, AIUrl } = env;
 
 export const getInterViewResult = async ({ ai, user }: IMsgs) => {
   console.log("서버에 요청 보냄", "ai : ", ai, "user : ", user);

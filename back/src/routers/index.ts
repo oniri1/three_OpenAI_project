@@ -1,7 +1,10 @@
 import { Router, Request, Response } from "express";
-import AI from "./AIRouter";
+import ai from "./AIRouter";
+import user from "./UserRouter";
+
 const router = Router();
 
-router.use("/AI", AI);
+router.use("/ai", ai);
+router.use("/user", user);
 
 export default router;
