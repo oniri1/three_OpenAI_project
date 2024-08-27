@@ -5,6 +5,7 @@ import { IsPending, IsError } from "../pending";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import env from "../../envs";
+import { IUser } from "../../interface/I_User";
 
 const { serverUrl } = env;
 
