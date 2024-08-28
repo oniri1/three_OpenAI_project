@@ -37,6 +37,7 @@ export class UserController {
     console.log('Patch/user/update');
     try {
       const userReq: IUserUpdate = req.body;
+      console.log(req.session);
 
       const userData = await this.userService.userCheck(req.session?.userData);
       if (!userData) {
@@ -45,13 +46,37 @@ export class UserController {
         req.session.userData = userSession;
         res.status(HttpStatus.CREATED).json();
       } else {
-        console.log('세션 데이터 있음');
-        const userSession = await this.userService.userUpdate(
-          userData as IUserData,
-        );
+        const { id } = userData as IUserData;
+        const { name, email, intro } = userReq;
+
+        console.log('세션 데이터 있음, 데이터 변경 시작');
+        const userSession = await this.userService.userUpdate({
+          id,
+          name,
+          email,
+          intro,
+        });
+        console.log('데이터 변경 성공', userSession);
         req.session.userData = userSession;
         res.status(HttpStatus.OK).json();
       }
+    } catch (err) {
+      res.status(HttpStatus.FORBIDDEN).json(err);
+    }
+  }
+
+  @Patch('test') async test(@Req() req: Request, @Res() res: Response) {
+    console.log('Patch/user/test');
+    const userData: IUserData = {
+      id: 2,
+      name: '수정',
+      intro: '수정',
+      email: '수정',
+    };
+    console.log(await this.userService.userUpdate(userData));
+
+    res.json();
+    try {
     } catch (err) {
       res.status(HttpStatus.FORBIDDEN).json(err);
     }

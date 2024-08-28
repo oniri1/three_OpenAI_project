@@ -64,12 +64,13 @@ export class UserService {
     }
   }
 
-  async userUpdate({ id, name, email, intro }) {
+  async userUpdate({ id, name, email, intro }: IUserData) {
     try {
-      return await this.userRepository.update(
-        { id: id },
-        { name, email, intro },
-      );
+      await this.userRepository.update({ id: id }, { name, email, intro });
+
+      return await this.userRepository.findOneBy({
+        id: id,
+      });
     } catch (err) {
       throw err;
     }
