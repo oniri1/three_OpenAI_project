@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  HttpStatus,
-  Patch,
-} from '@nestjs/common';
+import { Controller, Get, Req, Res, HttpStatus, Patch } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { IUserUpdate, IUserData } from 'src/interfaces/i_User';
@@ -29,6 +21,29 @@ export class UserController {
     } catch (err) {
       console.log(err);
       res.status(HttpStatus.FORBIDDEN).json(err);
+    }
+  }
+
+  @Get('feedBacks')
+  async userFeedBacks(@Req() req: Request, @Res() res: Response) {
+    try {
+      const userData: IUserData = req.session?.userData;
+
+      const userCheck = await this.userService.userCheck(userData);
+      if (!userCheck) {
+        res.status(HttpStatus.NO_CONTENT).send();
+        return;
+      } else {
+        const { id } = userCheck as IUserData;
+        const getFeedBacks = await this.userService.userFeedBacksGet(id);
+
+        const { feedBacks, totalFeedBack } = getFeedBacks;
+
+        console.log('피드백 보냄');
+        res.status(200).json({ feedBacks, totalFeedBack });
+      }
+    } catch (err) {
+      res.status(403).json(err);
     }
   }
 
@@ -64,6 +79,4 @@ export class UserController {
       res.status(HttpStatus.FORBIDDEN).json(err);
     }
   }
-
-  @Patch('test') async test(@Req() req: Request, @Res() res: Response) {}
 }

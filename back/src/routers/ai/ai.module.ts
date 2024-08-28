@@ -9,11 +9,12 @@ import { UserService } from '../user/user.service';
 import { UserController } from '../user/user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entitiy';
+
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: FeedBack.name, schema: FeedBackSchema },
-    ]), // User 스키마 등록
+    ]), // 몽고 스키마 등록
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AiController, UserController],

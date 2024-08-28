@@ -3,11 +3,15 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
+import { MongooseModule } from '@nestjs/mongoose';
 import { User } from 'src/entity/user.entitiy';
+import { FeedBack, FeedBackSchema } from '../ai/mongoDB/feedback.schema';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([
+      { name: FeedBack.name, schema: FeedBackSchema },
+    ]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule], // ConfigModule을 import하여 사용할 수 있도록 설정
       inject: [ConfigService], // ConfigService를 주입

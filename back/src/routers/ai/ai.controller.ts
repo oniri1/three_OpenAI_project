@@ -116,20 +116,4 @@ export class AiController {
       throw new Error(err);
     }
   }
-
-  @Post('test')
-  async aiTest() {
-    try {
-      const a = await this.feedBackService.findAllUsersFeedbacks();
-      console.log(a);
-      return 'hi';
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  //   @Get()
-  //   async findAllUsers(): Promise<FeedBack[]> {
-  //     return this.feedBackService.findAllUsersFeedbacks();
-  //   }
 }

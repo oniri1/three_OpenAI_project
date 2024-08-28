@@ -155,16 +155,6 @@ export class FeedBackService {
 
     return result;
   }
-
-  async findAllUsersFeedbacks() {
-    try {
-      return await this.FeedBackModel.countDocuments({
-        userId: 1,
-      }).exec();
-    } catch (err) {
-      throw err;
-    }
-  }
 }
 
 //Ai서비스

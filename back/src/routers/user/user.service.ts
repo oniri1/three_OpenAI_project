@@ -4,12 +4,27 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUserData } from 'src/interfaces/i_User';
 
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { FeedBack } from '../ai/mongoDB/feedback.schema';
+
 @Injectable()
 export class UserService {
   constructor(
+    @InjectModel(FeedBack.name) private FeedBackModel: Model<FeedBack>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>, // User 엔티티에 대한 Repository 주입
   ) {}
+
+  async userFeedBacksGet(userId: number) {
+    try {
+      return await this.FeedBackModel.findOne({ userId })
+        .sort({ feedBackId: -1 })
+        .exec();
+    } catch (err) {
+      throw err;
+    }
+  }
 
   async userCheck(
     userData: IUserData | undefined,
@@ -34,8 +49,7 @@ export class UserService {
           console.log('유저 확인');
           return userDataFromDb;
         } else {
-          console.log('유저 정보가 다름');
-          return false;
+          throw 'dont touch userData';
         }
       }
     } catch (err) {
