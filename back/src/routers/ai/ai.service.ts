@@ -31,9 +31,11 @@ export class FeedBackService {
   }: {
     saveValues: IFeedBackSave[];
     userId: number;
-  }): Promise<void> {
+  }) {
     try {
-      const feedBackId = 99;
+      const feedBackId = await this.FeedBackModel.countDocuments({
+        userId,
+      }).exec();
 
       //saveValues 를 FeedBacks로 변환
       const feedBacks = await this.feedBacksMaker(saveValues);
@@ -57,9 +59,7 @@ export class FeedBackService {
         feedBackId,
       });
 
-      console.log(newFeedBack);
-
-      // return await newUser.save();
+      return await newFeedBack.save();
     } catch (err) {
       throw err;
     }
@@ -69,9 +69,7 @@ export class FeedBackService {
     try {
       const result: IFeedBacks[] = [];
 
-      console.log(saveValues, '확인');
       for (const { ai, user } of saveValues) {
-        console.log(ai, user);
         if (!(ai && user)) {
           throw 'Data Error at FeedBackMaker';
         }
@@ -152,14 +150,21 @@ export class FeedBackService {
       model: this.configService.get<string>('INTERVIEWER_AI_ID'),
     });
     const result = completion.choices[0].message.content;
+
     console.log(result);
 
     return result;
   }
 
-  //   async findAllUsersFeedbacks(): Promise<FeedBack[]> {
-  //     return this.FeedBackModel.find().exec();
-  //   }
+  async findAllUsersFeedbacks() {
+    try {
+      return await this.FeedBackModel.countDocuments({
+        userId: 1,
+      }).exec();
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 //Ai서비스

@@ -67,12 +67,9 @@ export class AiController {
 
         interViewMsg.push(aiMsg);
         interViewMsg.push(userMsg);
-
-        console.log('유저 데이터 변환 성공', interViewMsg);
       } else {
         console.log('입력 데이터 없음', ai, user);
       }
-      console.log('작동 시작');
 
       res.json({ msg: await this.aiService.doInterView(interViewMsg) });
     } catch (err) {
@@ -105,12 +102,12 @@ export class AiController {
 
       const { id } = userCheck as IUserData;
 
-      console.log(saveValues, id);
-
-      await this.feedBackService.createFeedBacks({
+      const saved = await this.feedBackService.createFeedBacks({
         saveValues: saveValues,
         userId: id,
       });
+
+      console.log('세이브', saved);
 
       res.status(201).json();
 
@@ -120,39 +117,16 @@ export class AiController {
     }
   }
 
-  // @Post('test')
-  // async aiTest() {
-  //   const ai = '당신에 대해 설명해 주시겠어요?';
-  //   const user = '저는 IT 기업에 입사하기 위해 자바스크립트를 공부했습니다.';
-  //   const userReq =
-  //     user + '이 대답이 적절한가요? 어떻게 대답하면 좋을지 피드백을 해줘';
-
-  //   const interViewMSGDefault: ChatCompletionMessageParam = {
-  //     role: 'system',
-  //     content:
-  //       '당신은 다음 내용에 대해 틀린점을 지적하며, 다음번에는 어떻게 대답하면 좋을지에 대해 피드백 합니다.',
-  //   };
-  //   const interViewMsg: ChatCompletionMessageParam[] = [interViewMSGDefault];
-
-  //   const aiMsg: ChatCompletionMessageParam = {
-  //     role: 'assistant',
-  //     content: ai,
-  //   };
-
-  //   const userMsg: ChatCompletionMessageParam = {
-  //     role: 'user',
-  //     content: userReq,
-  //   };
-
-  //   interViewMsg.push(aiMsg);
-  //   interViewMsg.push(userMsg);
-
-  //   console.log(interViewMsg);
-
-  //   this.feedBackService.aiDoWork({ messages: interViewMsg });
-
-  //   return 'hi';
-  // }
+  @Post('test')
+  async aiTest() {
+    try {
+      const a = await this.feedBackService.findAllUsersFeedbacks();
+      console.log(a);
+      return 'hi';
+    } catch (err) {
+      throw err;
+    }
+  }
 
   //   @Get()
   //   async findAllUsers(): Promise<FeedBack[]> {
