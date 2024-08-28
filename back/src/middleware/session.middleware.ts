@@ -20,9 +20,9 @@ export class SessionMiddleware implements NestMiddleware {
           reapInterval: 10,
           path: './session',
         }),
-        // cookie: {
-        //   maxAge: 1000 * 60,
-        // },
+        cookie: {
+          maxAge: 1000 * 60 * 60 * 24 * 30,
+        },
       })(req, res, next);
     } else {
       throw new Error('sessionKey Missed');

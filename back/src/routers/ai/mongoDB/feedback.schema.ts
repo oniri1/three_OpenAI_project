@@ -1,16 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { IFeedBacks } from 'src/interfaces/i_Ai';
 
 @Schema()
 export class FeedBack extends Document {
   @Prop({ required: true })
-  ai: string;
+  totalFeedBack: string;
 
   @Prop({ required: true })
-  user: string;
-
-  @Prop({ required: true })
-  feedBack: string;
+  feedBacks: IFeedBacks[];
 
   @Prop({ required: true })
   userId: number;

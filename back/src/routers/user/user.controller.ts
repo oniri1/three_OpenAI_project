@@ -65,20 +65,5 @@ export class UserController {
     }
   }
 
-  @Patch('test') async test(@Req() req: Request, @Res() res: Response) {
-    console.log('Patch/user/test');
-    const userData: IUserData = {
-      id: 2,
-      name: '수정',
-      intro: '수정',
-      email: '수정',
-    };
-    console.log(await this.userService.userUpdate(userData));
-
-    res.json();
-    try {
-    } catch (err) {
-      res.status(HttpStatus.FORBIDDEN).json(err);
-    }
-  }
+  @Patch('test') async test(@Req() req: Request, @Res() res: Response) {}
 }
