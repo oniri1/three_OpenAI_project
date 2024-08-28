@@ -1,19 +1,43 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Session,
+  HttpStatus,
+} from '@nestjs/common';
 import { AiService, FeedBackService } from './ai.service';
 import { FeedBack } from './mongoDB/feedback.schema';
 import { ChatCompletionMessageParam } from 'openai/resources/index';
+import { SessionData } from 'express-session';
+import { UserService } from '../user/user.service';
+import { Response } from 'express';
+import { IUserData } from 'src/interfaces/i_User';
 
 @Controller('ai')
 export class AiController {
   constructor(
     private readonly feedBackService: FeedBackService,
     private readonly aiService: AiService,
+    private readonly userService: UserService,
   ) {}
 
   @Post('doInterView')
-  async doInterView(@Body('ai') ai: string, @Body('user') user: string) {
+  async doInterView(
+    @Body('ai') ai: string,
+    @Body('user') user: string,
+    @Session() session: SessionData,
+    @Res() res: Response,
+  ) {
     try {
-      console.log(ai, user);
+      const userData: IUserData = session.userData;
+      console.log(ai, user, userData);
+
+      const userCheck = await this.userService.userCheck(userData);
+      if (!userCheck) {
+        res.status(HttpStatus.NO_CONTENT).send();
+        return;
+      }
 
       const interViewMSGDefault: ChatCompletionMessageParam = {
         role: 'system',
@@ -42,9 +66,9 @@ export class AiController {
       }
       console.log('작동 시작');
 
-      return this.aiService.doInterView(interViewMsg);
+      res.json(this.aiService.doInterView(interViewMsg));
     } catch (err) {
-      throw new Error(err);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(err);
     }
   }
 

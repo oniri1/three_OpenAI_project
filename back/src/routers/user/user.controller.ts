@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Req, Res, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  HttpStatus,
+  Patch,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
+import { IUserUpdate, IUserData } from 'src/interfaces/i_User';
 
 @Controller('user')
 export class UserController {
@@ -10,12 +19,12 @@ export class UserController {
   async userCheck(@Req() req: Request, @Res() res: Response) {
     console.log('get/user/check');
     try {
-      if (!(await this.userService.userCheck(req.session.userData?.id))) {
+      const userData = await this.userService.userCheck(req.session?.userData);
+      if (!userData) {
         console.log('세션없음');
         res.status(HttpStatus.NO_CONTENT).send();
       } else {
-        //추가 로직 필요
-        console.log('있음');
+        res.status(HttpStatus.OK).send();
       }
     } catch (err) {
       console.log(err);
@@ -23,11 +32,26 @@ export class UserController {
     }
   }
 
-  @Post('create')
+  @Patch('update')
   async userCreate(@Req() req: Request, @Res() res: Response) {
-    console.log('post/user/create');
+    console.log('Patch/user/update');
     try {
-      res.status(HttpStatus.CREATED).json(await this.userService.userCreate());
+      const userReq: IUserUpdate = req.body;
+
+      const userData = await this.userService.userCheck(req.session?.userData);
+      if (!userData) {
+        console.log('유저 생성 시작');
+        const userSession = await this.userService.userCreate(userReq);
+        req.session.userData = userSession;
+        res.status(HttpStatus.CREATED).json();
+      } else {
+        console.log('세션 데이터 있음');
+        const userSession = await this.userService.userUpdate(
+          userData as IUserData,
+        );
+        req.session.userData = userSession;
+        res.status(HttpStatus.OK).json();
+      }
     } catch (err) {
       res.status(HttpStatus.FORBIDDEN).json(err);
     }
