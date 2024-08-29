@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -5,8 +7,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { InterviewHistory } from "./interviewHistory";
-import { getInterViewResult } from "../../../../funcs/APIs/interViewAi";
+import { InterviewHistory } from "../feedBacks/interviewHistory";
+import { getInterViewResult } from "@/funcs/APIs/interViewAi";
 import { useMutation } from "@tanstack/react-query";
 
 export const Interview = (): JSX.Element => {

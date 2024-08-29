@@ -1,5 +1,7 @@
+"use client";
+
 import { useMemo, useState } from "react";
-import { InterviewHistory } from "./interviews";
+import { InterviewHistory } from "./interviewHistory";
 
 export const FeedBack = (): JSX.Element => {
   const [historyValues, setHistoryValues] = useState<[]>();

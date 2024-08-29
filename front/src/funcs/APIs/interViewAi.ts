@@ -1,6 +1,6 @@
 import axios from "axios";
-import { IMsgs } from "../interFace/interViewAi";
-import env from "../../envs";
+import { IMsgs } from "../interface/interViewAi";
+import env from "@/envs";
 
 const { serverUrl, AIUrl } = env;
 
