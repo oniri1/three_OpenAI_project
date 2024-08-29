@@ -11,7 +11,7 @@ export const InterviewStart = (): JSX.Element => {
       </h2>
       <div className="flex flex-col md:flex-row gap-4 md:gap-6">
         <div className="flex-1">
-          <h3 className="text-md md:text-lg font-medium">
+          <h3 className="text-md md:text-lg font-medium text-black">
             지금 면접을 시작해보세요!
           </h3>
           <Link href={"/interview"}>

@@ -30,6 +30,7 @@ export const Interview = (): JSX.Element => {
     onSuccess: () => {
       setUserRes(undefined);
     },
+    onError: () => {},
   });
 
   useEffect(() => {

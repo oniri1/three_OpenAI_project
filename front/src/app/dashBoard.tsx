@@ -1,4 +1,8 @@
-export const Dashboard = (): JSX.Element => {
+interface IProps {
+  name: string | undefined;
+}
+
+export const Dashboard = ({ name }: IProps): JSX.Element => {
   return (
     <section
       id="dashboard"
@@ -8,8 +12,8 @@ export const Dashboard = (): JSX.Element => {
         햄스터의 가상 면접 사이트!
       </h2>
       <div className="mt-2 md:mt-4">
-        <h3 className="text-md md:text-lg font-medium">
-          환영합니다, [유저 이름]
+        <h3 className="text-md md:text-lg font-medium text-black">
+          환영합니다, {name}님!
         </h3>
         <p className="text-gray-600">
           무료로 가상 면접을 진행하고 피드백을 받아보세요!

@@ -6,7 +6,7 @@ import { InterviewStart } from "./interviewStart";
 import axios from "axios";
 import { IsError } from "./isError";
 import { IsPending } from "./isPend";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import env from "../envs";
 import { IUser } from "@/funcs/interface/I_User";
@@ -14,6 +14,7 @@ import { IUser } from "@/funcs/interface/I_User";
 const { serverUrl } = env;
 
 export const MainPage = () => {
+  const [name, setName] = useState<string>();
   const router = useRouter();
 
   const { data, isError, isPending, mutate } = useMutation({
@@ -25,7 +26,7 @@ export const MainPage = () => {
           withCredentials: true,
         }
       );
-      return { user: data, status: status };
+      return { data: data, status: status };
     },
   });
 
@@ -37,6 +38,8 @@ export const MainPage = () => {
   useEffect(() => {
     if (data?.status === 204) {
       router.push("./userProFile");
+    } else {
+      setName(data?.data.name);
     }
   }, [data]);
 
@@ -46,7 +49,7 @@ export const MainPage = () => {
     <IsPending />
   ) : data ? (
     <>
-      <Dashboard />
+      <Dashboard name={name} />
       <InterviewStart />
     </>
   ) : (

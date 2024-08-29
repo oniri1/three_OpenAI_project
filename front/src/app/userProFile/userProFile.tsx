@@ -10,16 +10,12 @@ import React, {
 
 import env from "@/envs";
 import axios from "axios";
-import { IUser } from "@/funcs/interface/I_User";
+import { IGetUserDatas, IUser } from "@/funcs/interface/I_User";
 
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 const { serverUrl } = env;
-interface IGetUserDatas {
-  data?: IUser;
-  status: number;
-}
 
 export const UserProFile = (): JSX.Element => {
   const router = useRouter();
@@ -99,19 +95,14 @@ export const UserProFile = (): JSX.Element => {
   });
 
   useEffect(() => {
-    console.log(data);
-    setUserDataRes(data);
-  }, [data, setUserDataRes]);
-
-  useEffect(() => {
-    if (userDataRes?.data !== undefined) {
-      const { name, email, intro } = userDataRes.data;
+    if (data !== undefined) {
+      const { name, email, intro } = data?.data as IUser;
 
       setName(name);
       setEmail(email);
       setText(intro);
     }
-  }, [userDataRes, setName, setEmail, setText]);
+  }, [data, setName, setEmail, setText]);
 
   return (
     <section

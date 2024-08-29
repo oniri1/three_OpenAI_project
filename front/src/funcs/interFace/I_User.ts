@@ -4,3 +4,8 @@ export interface IUser {
   email: string;
   intro: string;
 }
+
+export interface IGetUserDatas {
+  data?: IUser;
+  status: number;
+}

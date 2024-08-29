@@ -8,7 +8,7 @@ export const IsError = (): JSX.Element => {
       ></img>
       <div className="w-[100%]">
         <div className="flex justify-center items-center text-black">
-          서버가 맛이 갔어요.
+          서버를 기다리고 있어요.
         </div>
       </div>
     </div>
