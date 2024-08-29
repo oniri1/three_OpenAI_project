@@ -16,7 +16,7 @@ export class UserController {
         console.log('세션없음');
         res.status(HttpStatus.NO_CONTENT).send();
       } else {
-        res.status(HttpStatus.OK).send();
+        res.status(HttpStatus.OK).json(userData);
       }
     } catch (err) {
       console.log(err);

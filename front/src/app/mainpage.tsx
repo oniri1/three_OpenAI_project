@@ -7,7 +7,7 @@ import axios from "axios";
 import { IsError } from "./isError";
 import { IsPending } from "./isPend";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import env from "../envs";
 import { IUser } from "@/funcs/interface/I_User";
 
@@ -20,7 +20,7 @@ export const MainPage = () => {
     mutationKey: ["user", "check"],
     mutationFn: async () => {
       const { data, status }: { data: IUser; status: number } = await axios.get(
-        `${serverUrl}/User/Check`,
+        `${serverUrl}/user/check`,
         {
           withCredentials: true,
         }

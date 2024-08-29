@@ -7,7 +7,7 @@ export const IsError = (): JSX.Element => {
         className="h-[100%] w-[100%] rounded-full"
       ></img>
       <div className="w-[100%]">
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center text-black">
           서버가 맛이 갔어요.
         </div>
       </div>

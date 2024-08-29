@@ -4,7 +4,6 @@ const env: { [key: string]: string | undefined } = {
 };
 
 Object.entries(env).forEach(([key, value]) => {
-  console.log(key, value);
   if (value === undefined) {
     throw new Error(`${key} is ${value}`);
   }

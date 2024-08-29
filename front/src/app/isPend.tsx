@@ -7,7 +7,7 @@ export const IsPending = (): JSX.Element => {
         className="h-[100%] w-[100%] rounded-full"
       ></img>
       <div className="w-[100%]">
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center text-black">
           데이터를 가져오고 있어요.
         </div>
       </div>

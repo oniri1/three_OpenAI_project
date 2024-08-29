@@ -24,7 +24,7 @@ export class User {
 
   @Column({
     type: 'varchar',
-    length: 100,
+    length: 500,
     nullable: false,
     default: false,
   })
