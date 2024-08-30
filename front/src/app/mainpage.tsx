@@ -1,11 +1,11 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { Dashboard } from "./dashBoard";
-import { InterviewStart } from "./interviewStart";
+import { Dashboard } from "@/components/global/dashBoard";
+import { InterviewStart } from "@/components/interviews/interviewStart";
 import axios from "axios";
-import { IsError } from "./isError";
-import { IsPending } from "./isPend";
+import { IsError } from "@/components/waitServer/isError";
+import { IsPending } from "@/components/waitServer/isPend";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import env from "../envs";

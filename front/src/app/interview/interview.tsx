@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { InterviewHistory } from "../feedBacks/interviewHistory";
+import { InterviewHistory } from "@/components/interviews/interviewHistory";
 import { getInterViewResult } from "@/funcs/APIs/interViewAi";
 import { useMutation } from "@tanstack/react-query";
 
