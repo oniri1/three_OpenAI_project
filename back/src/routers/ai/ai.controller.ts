@@ -30,6 +30,7 @@ export class AiController {
     @Session() session: SessionData,
     @Res() res: Response,
   ) {
+    console.log('post/ai/doInterView');
     try {
       const userData: IUserData = session?.userData;
       const interViewMSGDefault: ChatCompletionMessageParam = {
@@ -83,6 +84,7 @@ export class AiController {
     @Session() session: SessionData,
     @Res() res: Response,
   ): Promise<FeedBack> {
+    console.log('post/ai/feedBackSave');
     try {
       const userData: IUserData = session?.userData;
 
@@ -107,7 +109,7 @@ export class AiController {
         userId: id,
       });
 
-      console.log('세이브', saved);
+      console.log('세이브된 피드백', saved);
 
       res.status(201).json();
 

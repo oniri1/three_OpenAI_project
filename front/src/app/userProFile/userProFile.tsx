@@ -49,7 +49,6 @@ export const UserProFile = (): JSX.Element => {
   const { mutate } = useMutation({
     mutationKey: ["user", "update"],
     mutationFn: async () => {
-      console.log(serverUrl, name, email, text);
       await axios.patch(
         `${serverUrl}/user/update`,
         {

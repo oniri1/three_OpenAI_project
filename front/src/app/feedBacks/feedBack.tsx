@@ -8,6 +8,7 @@ import axios from "axios";
 import env from "@/envs";
 import { IGetUserFeedBacks } from "@/funcs/interface/I_User";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const { serverUrl } = env;
 
@@ -64,13 +65,18 @@ export const FeedBack = (): JSX.Element => {
         id="feedback"
         className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6"
       >
-        <h2 className="text-lg md:text-xl font-semibold text-gray-800">
-          피드백
+        <Image
+          className="inline rounded-full"
+          src="/hamsterInterviewer.jpeg"
+          alt="imgNotFound"
+          width={50}
+          height={50}
+          sizes="(max-width: 1000px) 30vw, 60vw"
+        />
+        <h2 className="inline text-lg md:text-xl font-semibold text-gray-800">
+          종합 피드백
         </h2>
         <div className="mt-1 md:mt-2">
-          <h3 className="text-md md:text-lg font-medium text-gray-800">
-            가장 최근 면접에 대한 피드백
-          </h3>
           <p className="text-gray-600">{data?.data.totalFeedBack}</p>
         </div>
       </section>

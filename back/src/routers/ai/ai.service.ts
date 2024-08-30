@@ -50,7 +50,6 @@ export class FeedBackService {
         totalValues.join() +
         ', 이 피드백들을 토대로 나에게 어떤 문제들이 있는지 답변해주세요. 그리고 마지막이 ? 로 끝나는 대답은 하지말아주세요.';
 
-      console.log(totalValue);
       //토탈 피드백 만들기
       const totalFeedBack = await this.totalFeedBackMaker(totalValue);
 
@@ -169,7 +168,7 @@ export class AiService {
 
   async doInterView(messages: ChatCompletionMessageParam[]): Promise<string> {
     try {
-      console.log('AI 작동');
+      console.log('AI 작동 시작');
 
       return this.feedBackService.aiDoWork({ messages: messages });
     } catch (err) {

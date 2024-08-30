@@ -30,12 +30,9 @@ export class UserService {
     userData: IUserData | undefined,
   ): Promise<IUserData | boolean> {
     try {
-      console.log('유저 체크, 유저 데이터', userData);
       if (!userData) {
-        console.log('유저 데이터 없음');
         return false;
       } else {
-        console.log('유저 데이터 있음, 체크시작');
         const userDataFromDb = await this.userRepository.findOneBy({
           id: userData.id,
         });
@@ -46,7 +43,6 @@ export class UserService {
           userData.email === userDataFromDb.email &&
           userData.intro === userDataFromDb.intro
         ) {
-          console.log('유저 확인');
           return userDataFromDb;
         } else {
           throw 'dont touch userData';

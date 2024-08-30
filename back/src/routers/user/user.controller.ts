@@ -19,13 +19,13 @@ export class UserController {
         res.status(HttpStatus.OK).json(userData);
       }
     } catch (err) {
-      console.log(err);
       res.status(HttpStatus.FORBIDDEN).json(err);
     }
   }
 
   @Get('feedBacks')
   async userFeedBacks(@Req() req: Request, @Res() res: Response) {
+    console.log('get/user/feedBacks');
     try {
       const userData: IUserData = req.session?.userData;
 
@@ -39,7 +39,6 @@ export class UserController {
 
         const { feedBacks, totalFeedBack } = getFeedBacks;
 
-        console.log('피드백 보냄');
         res.status(200).json({ feedBacks, totalFeedBack });
       }
     } catch (err) {
@@ -49,14 +48,12 @@ export class UserController {
 
   @Patch('update')
   async userCreate(@Req() req: Request, @Res() res: Response) {
-    console.log('Patch/user/update');
+    console.log('patch/user/update');
     try {
       const userReq: IUserUpdate = req.body;
-      console.log(req.session);
 
       const userData = await this.userService.userCheck(req.session?.userData);
       if (!userData) {
-        console.log('유저 생성 시작');
         const userSession = await this.userService.userCreate(userReq);
         req.session.userData = userSession;
         res.status(HttpStatus.CREATED).json();
@@ -64,14 +61,13 @@ export class UserController {
         const { id } = userData as IUserData;
         const { name, email, intro } = userReq;
 
-        console.log('세션 데이터 있음, 데이터 변경 시작');
         const userSession = await this.userService.userUpdate({
           id,
           name,
           email,
           intro,
         });
-        console.log('데이터 변경 성공', userSession);
+
         req.session.userData = userSession;
         res.status(HttpStatus.OK).json();
       }

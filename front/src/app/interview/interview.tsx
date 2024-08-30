@@ -12,6 +12,7 @@ import { getInterViewResult } from "@/funcs/APIs/interViewAi";
 import { useMutation } from "@tanstack/react-query";
 import { IMsgs } from "@/funcs/interface/interViewAi";
 import { InterviewSaveBtn } from "@/components/interviews/interviewSaveBtn";
+import Image from "next/image";
 
 export const Interview = (): JSX.Element => {
   //
@@ -62,11 +63,14 @@ export const Interview = (): JSX.Element => {
         className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6"
       >
         <h2 className="inline text-lg md:text-xl font-semibold text-gray-800">
-          <img
+          <Image
+            className="inline rounded-full"
             src="/hamsterInterviewer.jpeg"
             alt="imgNotFound"
-            className="h-[50px] w-[50px] inline rounded-full"
-          ></img>
+            width={50}
+            height={50}
+            sizes="(max-width: 1000px) 30vw, 60vw"
+          />
           햄스터 면접관
         </h2>
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">

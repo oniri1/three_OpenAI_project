@@ -50,7 +50,7 @@ export const InterviewSaveBtn = ({ serverValues }: IProps): JSX.Element => {
                 try {
                   mutate();
                 } catch (err) {
-                  console.log(err);
+                  alert(err);
                 }
               }}
               className="mt-2 md:mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 w-full md:w-auto"

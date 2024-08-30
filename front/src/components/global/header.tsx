@@ -19,7 +19,7 @@ export const Header = (): JSX.Element => {
               </Link>
             </li>
             <li>
-              <Link href={"/feedBack"}>
+              <Link href={"/feedBacks"}>
                 <div className="text-blue-500 hover:underline cursor-pointer">
                   피드백
                 </div>

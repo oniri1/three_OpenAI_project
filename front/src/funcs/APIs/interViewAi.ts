@@ -5,7 +5,6 @@ import env from "@/envs";
 const { serverUrl, AIUrl } = env;
 
 export const getInterViewResult = async ({ ai, user }: IMsgs) => {
-  console.log("서버에 요청 보냄", "ai : ", ai, "user : ", user);
   const { data }: { data: { msg: string } } = await axios.post(
     `${serverUrl}/${AIUrl}/doInterView`,
     { ai: ai, user: user },
@@ -13,8 +12,6 @@ export const getInterViewResult = async ({ ai, user }: IMsgs) => {
       withCredentials: true,
     }
   );
-
-  console.log(data);
 
   return data.msg;
 };
