@@ -10,13 +10,18 @@ import {
 import { InterviewHistory } from "@/components/interviews/interviewHistory";
 import { getInterViewResult } from "@/funcs/APIs/interViewAi";
 import { useMutation } from "@tanstack/react-query";
+import { IMsgs } from "@/funcs/interface/interViewAi";
+import { InterviewSaveBtn } from "@/components/interviews/interviewSaveBtn";
 
 export const Interview = (): JSX.Element => {
   //
-  const [historyValues, setHistoryValues] = useState<[]>();
+  const [historyValues, setHistoryValues] = useState<IMsgs[]>([]);
+
   const historys: JSX.Element[] | undefined = useMemo(() => {
-    return historyValues?.map((history) => <InterviewHistory />);
-  }, []);
+    return historyValues?.map(({ ai, user }, idx) => {
+      return <InterviewHistory key={idx} number={idx} ai={ai} user={user} />;
+    });
+  }, [historyValues]);
   //
 
   const [ai, setAiReq] = useState<string>();
@@ -24,21 +29,30 @@ export const Interview = (): JSX.Element => {
 
   const { data, isPending, mutate } = useMutation({
     mutationKey: ["post", "interViewAi"],
-    mutationFn: async () => {
+    mutationFn: async ({
+      ai,
+      user,
+    }: {
+      ai: string | undefined;
+      user: string | undefined;
+    }) => {
       return getInterViewResult({ ai: ai, user: user });
     },
     onSuccess: () => {
+      if (ai && user) {
+        setHistoryValues((values) => [...values, { ai: ai, user: user }]);
+      }
       setUserRes(undefined);
     },
     onError: () => {},
   });
 
   useEffect(() => {
-    setAiReq(data);
+    if (data) setAiReq(data);
   }, [data, setAiReq]);
 
   useEffect(() => {
-    mutate();
+    mutate({ ai: ai, user: user });
   }, [mutate]);
 
   return (
@@ -90,15 +104,15 @@ export const Interview = (): JSX.Element => {
                   onKeyUp={(event: KeyboardEvent<HTMLInputElement>) => {
                     if (event.key === "Enter") {
                       event.preventDefault();
-                      if (user) mutate();
+                      if (user) mutate({ ai: ai, user: user });
                     }
                   }}
-                  className="w-full mt-2 p-2 border border-gray-300 rounded-lg"
+                  className="w-full mt-2 p-2 border border-gray-300 rounded-lg text-gray-800"
                   placeholder="어떻게 대답해야 할까?"
                 ></input>
                 <button
                   onClick={() => {
-                    if (user) mutate();
+                    if (user) mutate({ ai: ai, user: user });
                   }}
                   className="mt-2 md:mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 w-full md:w-auto"
                 >
@@ -109,7 +123,10 @@ export const Interview = (): JSX.Element => {
           )}
         </div>
       </section>
-      {historys}
+      {historys.length !== 0 && (
+        <InterviewSaveBtn serverValues={historyValues} />
+      )}
+      {(!isPending || historys.length !== 0) && historys}
     </>
   );
 };

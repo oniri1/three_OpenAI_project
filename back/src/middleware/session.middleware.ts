@@ -17,7 +17,7 @@ export class SessionMiddleware implements NestMiddleware {
         saveUninitialized: true,
         name: 'userData',
         store: new FileStoreSession({
-          reapInterval: 10,
+          reapInterval: 1000,
           path: './session',
         }),
         cookie: {
