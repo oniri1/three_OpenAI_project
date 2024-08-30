@@ -5,7 +5,6 @@ import { useMutation } from "@tanstack/react-query";
 import env from "@/envs";
 import axios from "axios";
 import { IMsgs } from "@/funcs/interface/interViewAi";
-import { useState } from "react";
 
 const { serverUrl } = env;
 
@@ -17,7 +16,7 @@ export const InterviewSaveBtn = ({ serverValues }: IProps): JSX.Element => {
   const router = useRouter();
 
   const { isPending, mutate } = useMutation({
-    mutationKey: ["user", "update"],
+    mutationKey: ["ai", "feedBackSave"],
     mutationFn: async () => {
       await axios.post(
         `${serverUrl}/ai/feedBackSave`,
@@ -26,7 +25,7 @@ export const InterviewSaveBtn = ({ serverValues }: IProps): JSX.Element => {
       );
     },
     onSuccess: () => {
-      router.push("/feedBacks");
+      router.replace("/feedBacks");
     },
     onError: (err) => {
       alert(err);

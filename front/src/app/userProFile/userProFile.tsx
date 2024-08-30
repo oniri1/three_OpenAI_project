@@ -22,7 +22,7 @@ export const UserProFile = (): JSX.Element => {
   const [name, setName] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [text, setText] = useState<string>();
-  const [userDataRes, setUserDataRes] = useState<IGetUserDatas>();
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const textHandleChange = useCallback(
@@ -61,7 +61,7 @@ export const UserProFile = (): JSX.Element => {
       );
     },
     onSuccess: () => {
-      router.push("/");
+      router.replace("/");
     },
     onError: (err) => {
       alert(err);

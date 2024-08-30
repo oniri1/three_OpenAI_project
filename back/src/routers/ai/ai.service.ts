@@ -46,9 +46,11 @@ export class FeedBackService {
         totalValues.push(feedBack);
       }
       const totalValue =
-        totalValues.join(' ') +
-        '이 피드백들을 보고 나에게 어떤 문제들이 있는지 친절한 말투로 얘기해주세요.';
+        '다음과 같은 피드백을 받았습니다 : ' +
+        totalValues.join() +
+        ', 이 피드백들을 토대로 나에게 어떤 문제들이 있는지 답변해주세요. 그리고 마지막이 ? 로 끝나는 대답은 하지말아주세요.';
 
+      console.log(totalValue);
       //토탈 피드백 만들기
       const totalFeedBack = await this.totalFeedBackMaker(totalValue);
 

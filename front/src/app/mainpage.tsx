@@ -37,11 +37,11 @@ export const MainPage = () => {
   //로그인 미확인 시
   useEffect(() => {
     if (data?.status === 204) {
-      router.push("./userProFile");
+      router.replace("/userProFile");
     } else {
       setName(data?.data.name);
     }
-  }, [data]);
+  }, [data, router, setName]);
 
   return isError ? (
     <IsError />

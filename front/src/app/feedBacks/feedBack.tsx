@@ -1,53 +1,80 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { InterviewHistory } from "@/components/interviews/interviewHistory";
+import { IFeedBackMsgs } from "@/funcs/interface/interViewAi";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import env from "@/envs";
+import { IGetUserFeedBacks } from "@/funcs/interface/I_User";
+import { useRouter } from "next/navigation";
+
+const { serverUrl } = env;
+
+interface IGetUserFeedBackData {
+  data: IGetUserFeedBacks;
+  status: number;
+}
 
 export const FeedBack = (): JSX.Element => {
-  const [historyValues, setHistoryValues] = useState<[]>();
+  const router = useRouter();
+  const [historyValues, setHistoryValues] = useState<IFeedBackMsgs[]>();
 
   const historys: JSX.Element[] | undefined = useMemo(() => {
-    return historyValues?.map((history) => <InterviewHistory />);
-  }, []);
+    return historyValues?.map(({ ai, user, feedBack }, idx) => (
+      <InterviewHistory
+        key={idx}
+        number={idx}
+        ai={ai}
+        user={user}
+        feedBack={feedBack}
+      />
+    ));
+  }, [historyValues]);
+
+  const { data } = useQuery({
+    queryKey: ["user", "feedBacks"],
+    queryFn: async (): Promise<IGetUserFeedBackData> => {
+      try {
+        const { data, status } = await axios.get(
+          `${serverUrl}/user/feedBacks`,
+          {
+            withCredentials: true,
+          }
+        );
+        return { data: data, status: status };
+      } catch (err) {
+        throw err;
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    if (data?.status === 204) {
+      router.replace("/userProFile");
+    } else {
+      setHistoryValues(data?.data.feedBacks);
+    }
+  }, [data, router, setHistoryValues]);
 
   return (
-    <section
-      id="feedback"
-      className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6"
-    >
-      <h2 className="text-lg md:text-xl font-semibold text-gray-800">피드백</h2>
-      <div className="mt-2 md:mt-4">
-        <h3 className="text-md md:text-lg font-medium">
-          가장 최근 [유저 이름]에 대한 피드백
-        </h3>
-        <p className="text-gray-600">
-          당신의 대답은 질문에 대해 명확한 답변을 내지 못했습니다.
-        </p>
-        <div className="mt-2 md:mt-4">
-          <h4 className="text-sm md:text-md font-medium text-gray-800">
-            긍정적인 답변
-          </h4>
-          <div className="w-full bg-green-200 rounded-full h-4 md:h-6">
-            <div
-              className="bg-green-500 text-white text-center text-xs md:text-xs font-medium h-full rounded-full"
-              style={{ width: "70%" }}
-            >
-              70%
-            </div>
-          </div>
-          <h4 className="mt-2 md:mt-4 text-sm md:text-md font-medium text-gray-800">
-            부정적인 답변
-          </h4>
-          <div className="w-full bg-red-200 rounded-full h-4 md:h-6">
-            <div
-              className="bg-red-500 text-white text-center text-xs md:text-xs font-medium h-full rounded-full"
-              style={{ width: "30%" }}
-            >
-              30%
-            </div>
-          </div>
+    <>
+      <section
+        id="feedback"
+        className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6"
+      >
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800">
+          피드백
+        </h2>
+        <div className="mt-1 md:mt-2">
+          <h3 className="text-md md:text-lg font-medium text-gray-800">
+            가장 최근 면접에 대한 피드백
+          </h3>
+          <p className="text-gray-600">{data?.data.totalFeedBack}</p>
         </div>
-      </div>
-    </section>
+      </section>
+      {historys}
+    </>
   );
 };

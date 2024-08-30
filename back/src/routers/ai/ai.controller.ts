@@ -13,7 +13,7 @@ import { SessionData } from 'express-session';
 import { UserService } from '../user/user.service';
 import { Response } from 'express';
 import { IUserData } from 'src/interfaces/i_User';
-import { IFeedBacks, IFeedBackSave } from 'src/interfaces/i_Ai';
+import { IFeedBackSave } from 'src/interfaces/i_Ai';
 
 @Controller('ai')
 export class AiController {
