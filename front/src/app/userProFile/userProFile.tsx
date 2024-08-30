@@ -106,7 +106,7 @@ export const UserProFile = (): JSX.Element => {
   return (
     <section
       id="profile"
-      className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6"
+      className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6 animate-slide-up"
     >
       <h2 className="text-lg md:text-xl font-semibold text-gray-800">
         Profile

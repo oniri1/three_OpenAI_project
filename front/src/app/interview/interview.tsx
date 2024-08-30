@@ -118,7 +118,7 @@ export const Interview = (): JSX.Element => {
                   onClick={() => {
                     if (user) mutate({ ai: ai, user: user });
                   }}
-                  className="mt-2 md:mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 w-full md:w-auto"
+                  className="mt-2 md:mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 w-full md:w-auto animate-slide-up"
                 >
                   답변하기
                 </button>

@@ -42,7 +42,9 @@ export const InterviewSaveBtn = ({ serverValues }: IProps): JSX.Element => {
       </h2>
       <div className="flex flex-col md:flex-row gap-4 md:gap-6">
         {isPending ? (
-          <div className="flex-1 text-black">잠시만 기다려주세요!</div>
+          <div className="flex-1 text-black animate-slide-up">
+            잠시만 기다려주세요!
+          </div>
         ) : (
           <div className="flex-1">
             <button

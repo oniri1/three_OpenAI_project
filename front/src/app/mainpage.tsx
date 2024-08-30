@@ -48,10 +48,10 @@ export const MainPage = () => {
   ) : isPending ? (
     <IsPending />
   ) : data ? (
-    <>
+    <div className="animate-slide-up">
       <Dashboard name={name} />
       <InterviewStart />
-    </>
+    </div>
   ) : (
     <IsError />
   );
