@@ -53,7 +53,7 @@ export const Interview = (): JSX.Element => {
   }, [data, setAiReq]);
 
   useEffect(() => {
-    mutate({ ai: ai, user: user });
+    mutate({ ai: undefined, user: undefined });
   }, [mutate]);
 
   return (
