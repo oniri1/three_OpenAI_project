@@ -17,7 +17,7 @@ export const InterviewHistory = ({
       className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6 animate-slide-up"
     >
       <h2 className="text-lg md:text-xl font-semibold text-gray-800">
-        질문 .{number}
+        질문 .{number + 1}
       </h2>
       <div className="mt-2 md:mt-4">
         <h3 className="text-md md:text-lg font-semibold text-black">

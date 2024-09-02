@@ -7,11 +7,9 @@ import React, {
   ChangeEvent,
   useCallback,
 } from "react";
-
 import env from "@/envs";
 import axios from "axios";
 import { IGetUserDatas, IUser } from "@/funcs/interface/I_User";
-
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -22,6 +20,7 @@ export const UserProFile = (): JSX.Element => {
   const [name, setName] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [text, setText] = useState<string>();
+  const [pw, setPw] = useState<string>();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -44,6 +43,13 @@ export const UserProFile = (): JSX.Element => {
       setEmail(event.target.value);
     },
     [setEmail]
+  );
+
+  const pwHandleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setPw(event.target.value);
+    },
+    [setPw]
   );
 
   const { mutate } = useMutation({
@@ -94,14 +100,19 @@ export const UserProFile = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if (data !== undefined) {
-      const { name, email, intro } = data?.data as IUser;
+    if (data) {
+      if (data?.status === 200) {
+        const { name, email, intro, pw } = data?.data as IUser;
 
-      setName(name);
-      setEmail(email);
-      setText(intro);
+        setName(name);
+        setEmail(email);
+        setText(intro);
+        setPw(pw);
+      } else {
+        router.replace("/login");
+      }
     }
-  }, [data, setName, setEmail, setText]);
+  }, [data, setName, setEmail, setText, setPw, router]);
 
   return (
     <section
@@ -141,6 +152,22 @@ export const UserProFile = (): JSX.Element => {
             value={email ? email : ""}
           />
           <span className="text-gray-400">{email ? email.length : 0}/100</span>
+        </div>
+        <div>
+          <label htmlFor="password" className="block text-gray-700 font-medium">
+            PassWord:
+          </label>
+          <input
+            onChange={pwHandleChange}
+            maxLength={100}
+            type="text"
+            id="password"
+            className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
+            placeholder="hamster.ham.com"
+            autoComplete="current-password"
+            value={pw ? pw : ""}
+          />
+          <span className="text-gray-400">{pw ? pw.length : 0}/100</span>
         </div>
         <div>
           <label htmlFor="resume" className="block text-gray-700 font-medium">

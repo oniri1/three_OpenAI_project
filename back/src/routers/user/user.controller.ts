@@ -1,7 +1,20 @@
-import { Controller, Get, Req, Res, HttpStatus, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Res,
+  HttpStatus,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
-import { IUserUpdate, IUserData } from 'src/interfaces/i_User';
+import {
+  IUserUpdate,
+  IUserData,
+  IUserCreate,
+  IUserLogin,
+} from 'src/interfaces/i_User';
 
 @Controller('user')
 export class UserController {
@@ -19,7 +32,8 @@ export class UserController {
         res.status(HttpStatus.OK).json(userData);
       }
     } catch (err) {
-      res.status(HttpStatus.FORBIDDEN).json(err);
+      console.log(err);
+      res.status(HttpStatus.NO_CONTENT).send();
     }
   }
 
@@ -47,30 +61,58 @@ export class UserController {
   }
 
   @Patch('update')
-  async userCreate(@Req() req: Request, @Res() res: Response) {
+  async userUpdate(@Req() req: Request, @Res() res: Response) {
     console.log('patch/user/update');
     try {
       const userReq: IUserUpdate = req.body;
 
       const userData = await this.userService.userCheck(req.session?.userData);
       if (!userData) {
-        const userSession = await this.userService.userCreate(userReq);
-        req.session.userData = userSession;
-        res.status(HttpStatus.CREATED).json();
+        throw 'you are disabled';
       } else {
         const { id } = userData as IUserData;
-        const { name, email, intro } = userReq;
+        const { name, email, intro, pw } = userReq;
 
         const userSession = await this.userService.userUpdate({
           id,
           name,
           email,
           intro,
+          pw,
         });
 
         req.session.userData = userSession;
         res.status(HttpStatus.OK).json();
       }
+    } catch (err) {
+      res.status(HttpStatus.FORBIDDEN).json(err);
+    }
+  }
+
+  //새로 추가
+  @Post('regist')
+  async userCreate(@Req() req: Request, @Res() res: Response) {
+    console.log('post/user/regist');
+    try {
+      const userReq: IUserCreate = req.body;
+
+      const userSession = await this.userService.userCreate(userReq);
+      req.session.userData = userSession;
+      res.status(HttpStatus.CREATED).json();
+    } catch (err) {
+      res.status(HttpStatus.FORBIDDEN).json(err);
+    }
+  }
+
+  @Post('login')
+  async userlogin(@Req() req: Request, @Res() res: Response) {
+    console.log('post/user/login');
+    try {
+      const userReq: IUserLogin = req.body;
+
+      const userSession = await this.userService.userLogin(userReq);
+      req.session.userData = userSession;
+      res.status(HttpStatus.OK).json();
     } catch (err) {
       res.status(HttpStatus.FORBIDDEN).json(err);
     }

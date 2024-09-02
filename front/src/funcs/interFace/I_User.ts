@@ -5,6 +5,7 @@ export interface IUser {
   name: string;
   email: string;
   intro: string;
+  pw: string;
 }
 
 export interface IGetUserDatas {

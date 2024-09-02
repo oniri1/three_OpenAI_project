@@ -1,6 +1,7 @@
 interface UserBase {
   name: string;
   email: string;
+  pw: string;
   intro: string;
 }
 
@@ -9,3 +10,10 @@ export interface IUserData extends UserBase {
 }
 
 export interface IUserUpdate extends UserBase {}
+
+export interface IUserCreate extends UserBase {}
+
+export interface IUserLogin {
+  email: string;
+  pw: string;
+}

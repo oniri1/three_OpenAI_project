@@ -4,8 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Dashboard } from "@/components/global/dashBoard";
 import { InterviewStart } from "@/components/interviews/interviewStart";
 import axios from "axios";
-import { IsError } from "@/components/waitServer/isError";
-import { IsPending } from "@/components/waitServer/isPend";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import env from "../envs";
@@ -17,7 +16,7 @@ export const MainPage = () => {
   const [name, setName] = useState<string>();
   const router = useRouter();
 
-  const { data, isError, isPending, mutate } = useMutation({
+  const { data, mutate } = useMutation({
     mutationKey: ["user", "check"],
     mutationFn: async () => {
       const { data, status }: { data: IUser; status: number } = await axios.get(
@@ -36,23 +35,15 @@ export const MainPage = () => {
 
   //로그인 미확인 시
   useEffect(() => {
-    if (data?.status === 204) {
-      router.replace("/userProFile");
-    } else {
+    if (data) {
       setName(data?.data.name);
     }
-  }, [data, router, setName]);
+  }, [data, setName]);
 
-  return isError ? (
-    <IsError />
-  ) : isPending ? (
-    <IsPending />
-  ) : data ? (
+  return (
     <div className="animate-slide-up">
       <Dashboard name={name} />
-      <InterviewStart />
+      {name && <InterviewStart />}
     </div>
-  ) : (
-    <IsError />
   );
 };
