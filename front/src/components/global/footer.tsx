@@ -13,12 +13,11 @@ export const Footer = (): JSX.Element => {
           className="flex items-center bg-gray-800 text-white p-4 rounded-md shadow-lg hover:bg-blue-600 transition duration-300"
         >
           <Image
-            className="w-6 h-6 mr-2"
+            className="mr-2"
             src="/tistory-logo.png"
             alt="tistory"
-            fill
-            sizes="(max-width: 1000px) 30vw, 60vw"
-            priority
+            width={32}
+            height={32}
           />
           Tistory
         </a>
@@ -29,12 +28,11 @@ export const Footer = (): JSX.Element => {
           className="flex items-center bg-blue-500 text-white p-4 rounded-md shadow-lg hover:bg-gray-700 transition duration-300"
         >
           <Image
-            className="w-6 h-6 mr-2"
+            className="mr-2"
             src="/github-logo.png"
             alt="GitHub Blog"
-            fill
-            sizes="(max-width: 1000px) 30vw, 60vw"
-            priority
+            width={28}
+            height={28}
           />
           GitHub
         </a>
