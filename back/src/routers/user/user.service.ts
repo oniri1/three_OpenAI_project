@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/entity/user.entitiy';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IUserData, IUserLogin } from 'src/interfaces/i_User';
+import { IUserData, IUserLogin, IUserAcsToken } from 'src/interfaces/i_User';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -36,24 +36,16 @@ export class UserService {
     }
   }
 
-  async userCheck(
-    userData: IUserData | undefined,
-  ): Promise<IUserData | boolean> {
+  async userCheck(userData: IUserAcsToken): Promise<IUserData | boolean> {
     try {
       if (!userData) {
         return false;
       } else {
         const userDataFromDb = await this.userRepository.findOneBy({
-          id: userData.id,
+          email: userData.email,
         });
 
-        if (
-          userData.id === userDataFromDb.id &&
-          userData.name === userDataFromDb.name &&
-          userData.email === userDataFromDb.email &&
-          userData.intro === userDataFromDb.intro &&
-          userData.pw == userDataFromDb.pw
-        ) {
+        if (userData.email === userDataFromDb.email) {
           return userDataFromDb;
         } else {
           throw 'dont touch userData';
@@ -65,12 +57,10 @@ export class UserService {
     }
   }
 
-  async userLogin(
-    userData: IUserLogin | undefined,
-  ): Promise<IUserData | boolean> {
+  async userLogin(userData: IUserLogin | undefined): Promise<IUserData> {
     try {
       if (!userData) {
-        return false;
+        throw 'data undefined';
       } else {
         const userDataFromDb = await this.userRepository.findOneBy({
           email: userData.email,

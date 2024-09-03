@@ -17,3 +17,7 @@ export interface IUserLogin {
   email: string;
   pw: string;
 }
+
+export interface IUserAcsToken {
+  email: string;
+}
