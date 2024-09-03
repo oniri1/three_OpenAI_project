@@ -79,16 +79,17 @@ export const FeedBack = (): JSX.Element => {
     queryKey: ["user", "feedBacks"],
     queryFn: async (): Promise<void> => {
       try {
-        const { data } = await axios.get(`${serverUrl}/user/feedBacks`, {
-          withCredentials: true,
-        });
+        const { data, status } = await axios.get(
+          `${serverUrl}/user/feedBacks`,
+          {
+            withCredentials: true,
+          }
+        );
 
-        if (data) {
+        if (data && status === 200) {
           setTotalsValues(data);
           setIsShowHistory(false);
           setHistoryValues([]);
-        } else {
-          router.replace("/");
         }
         return data;
       } catch (err) {

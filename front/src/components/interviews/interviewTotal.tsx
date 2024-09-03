@@ -31,7 +31,7 @@ export const InterViewTotal = ({
         }
       }}
       id="feedback"
-      className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6"
+      className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6 animate-slide-up cursor-pointer hover:bg-slate-200 transition-colors"
     >
       <Image
         className="inline rounded-full"
