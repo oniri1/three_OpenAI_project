@@ -149,4 +149,15 @@ export class UserController {
       res.status(HttpStatus.FORBIDDEN).json(err);
     }
   }
+
+  @Get('logout')
+  async userLogout(@Req() req: Request, @Res() res: Response) {
+    console.log('get/user/logout');
+    try {
+      req.session.userData = undefined;
+      res.status(HttpStatus.OK).json();
+    } catch (err) {
+      res.status(HttpStatus.FORBIDDEN).json(err);
+    }
+  }
 }

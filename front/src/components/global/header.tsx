@@ -1,6 +1,48 @@
+"use client";
+
+import axios from "axios";
 import Link from "next/link";
+import env from "@/envs";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { IUser } from "@/funcs/interface/I_User";
+
+const { serverUrl } = env;
 
 export const Header = (): JSX.Element => {
+  const router = useRouter();
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+
+  const reloadHandler = useCallback(() => {
+    router.replace("/logouting");
+  }, [router]);
+
+  const { data, mutate } = useMutation({
+    mutationKey: ["user", "check"],
+    mutationFn: async () => {
+      const { data, status }: { data: IUser; status: number } = await axios.get(
+        `${serverUrl}/user/check`,
+        {
+          withCredentials: true,
+        }
+      );
+      return { data: data, status: status };
+    },
+  });
+
+  useEffect(() => {
+    mutate();
+  }, [mutate]);
+
+  useEffect(() => {
+    if (data?.status === 200) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, [data]);
+
   return (
     <header className="bg-white shadow-md border-b border-blue-500">
       <div className="container mx-auto py-4 flex justify-between items-center">
@@ -34,6 +76,35 @@ export const Header = (): JSX.Element => {
             </li>
           </ul>
         </nav>
+        {isLogin ? (
+          <div
+            onClick={async () => {
+              try {
+                const result = await axios.get(`${serverUrl}/user/logout`, {
+                  withCredentials: true,
+                });
+
+                if (result.status === 200) {
+                  reloadHandler();
+                }
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            className="text-xl md:text-xl font-bold text-blue-600 cursor-pointer hover:scale-105"
+          >
+            로그아웃
+          </div>
+        ) : (
+          <div
+            onClick={() => {
+              router.replace("/login");
+            }}
+            className="text-xl md:text-xl font-bold text-blue-600 cursor-pointer hover:scale-105"
+          >
+            로그인
+          </div>
+        )}
       </div>
     </header>
   );

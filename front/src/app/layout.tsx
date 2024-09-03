@@ -22,10 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="min-h-screen bg-gray-100 flex flex-col">
-          <Header />
-          <main className="flex-1 container mx-auto p-4 md:p-6">
-            <ReactQuery>{children}</ReactQuery>
-          </main>
+          <ReactQuery>{children}</ReactQuery>
           <Footer />
         </div>
       </body>

@@ -1,24 +1,21 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { InterviewHistory } from "@/components/interviews/interviewHistory";
 import { InterViewTotal } from "@/components/interviews/interviewTotal";
 import { IFeedBackMsgs, ITotalValue } from "@/funcs/interface/interViewAi";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import env from "@/envs";
+import { IGetUserDatas } from "@/funcs/interface/I_User";
 
 import { useRouter } from "next/navigation";
 
 const { serverUrl } = env;
 
-// interface IGetUserFeedBackData {
-//   data: IGetUserFeedBacks;
-//   status: number;
-// }
-
 export const FeedBack = (): JSX.Element => {
   const router = useRouter();
+
   const [totalsValues, setTotalsValues] = useState<ITotalValue[]>([]);
   const [historyValues, setHistoryValues] = useState<IFeedBackMsgs[]>([]);
 
@@ -52,25 +49,45 @@ export const FeedBack = (): JSX.Element => {
     },
   });
 
-  const { refetch } = useQuery({
-    queryKey: ["user", "feedBacks"],
-    queryFn: async (): Promise<void> => {
+  const { data } = useQuery({
+    queryKey: ["user", "check"],
+    queryFn: async (): Promise<IGetUserDatas> => {
       try {
-        const { data, status } = await axios.get(
-          `${serverUrl}/user/feedBacks`,
+        const { data, status }: IGetUserDatas = await axios.get(
+          `${serverUrl}/user/check`,
           {
             withCredentials: true,
           }
         );
+        return { data: data, status: status };
+      } catch (err) {
+        throw err;
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
 
-        if (status === 204) {
-          router.replace("/userProFile");
-        } else if (data) {
+  useEffect(() => {
+    if (data) {
+      if (data?.status !== 200) {
+        router.replace("/login");
+      }
+    }
+  }, [data, router]);
+
+  const { refetch } = useQuery({
+    queryKey: ["user", "feedBacks"],
+    queryFn: async (): Promise<void> => {
+      try {
+        const { data } = await axios.get(`${serverUrl}/user/feedBacks`, {
+          withCredentials: true,
+        });
+
+        if (data) {
           setTotalsValues(data);
           setIsShowHistory(false);
           setHistoryValues([]);
         } else {
-          alert("err");
           router.replace("/");
         }
         return data;
@@ -79,7 +96,12 @@ export const FeedBack = (): JSX.Element => {
       }
     },
     refetchOnWindowFocus: false,
+    enabled: false,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const totals: JSX.Element[] | undefined = useMemo(() => {
     return totalsValues?.map(({ feedBackId, totalFeedBack }) => (
