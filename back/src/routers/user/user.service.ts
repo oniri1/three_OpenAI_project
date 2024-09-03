@@ -16,9 +16,19 @@ export class UserService {
     private readonly userRepository: Repository<User>, // User 엔티티에 대한 Repository 주입
   ) {}
 
+  async userFeedBackGet(userId: number, feedBackId: number) {
+    try {
+      return await this.FeedBackModel.findOne({ userId, feedBackId })
+        .sort({ feedBackId: -1 })
+        .exec();
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async userFeedBacksGet(userId: number) {
     try {
-      return await this.FeedBackModel.findOne({ userId })
+      return await this.FeedBackModel.find({ userId })
         .sort({ feedBackId: -1 })
         .exec();
     } catch (err) {

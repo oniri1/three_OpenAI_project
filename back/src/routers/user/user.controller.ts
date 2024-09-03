@@ -37,6 +37,7 @@ export class UserController {
     }
   }
 
+  //이걸 유저랑 피드백 아이디 받아서 리턴하는 함수로 만들 예정
   @Get('feedBacks')
   async userFeedBacks(@Req() req: Request, @Res() res: Response) {
     console.log('get/user/feedBacks');
@@ -51,9 +52,40 @@ export class UserController {
         const { id } = userCheck as IUserData;
         const getFeedBacks = await this.userService.userFeedBacksGet(id);
 
-        const { feedBacks, totalFeedBack } = getFeedBacks;
+        console.log(getFeedBacks);
+        const result = getFeedBacks.map(({ feedBackId, totalFeedBack }) => {
+          return { feedBackId, totalFeedBack };
+        });
 
-        res.status(200).json({ feedBacks, totalFeedBack });
+        res.status(200).json(result);
+      }
+    } catch (err) {
+      res.status(403).json(err);
+    }
+  }
+
+  //이 아래에 위에 함수 복붙해서 일단 모든 피드백 전부 보내는 함수를 만들예정
+  @Post('feedBack')
+  async userFeedBack(@Req() req: Request, @Res() res: Response) {
+    console.log('post/user/feedBack');
+    try {
+      const userData: IUserData = req.session?.userData;
+
+      const userCheck = await this.userService.userCheck(userData);
+      if (!userCheck) {
+        res.status(HttpStatus.NO_CONTENT).send();
+        return;
+      } else {
+        const { id } = userCheck as IUserData;
+        const { feedBackId }: { feedBackId: number } = req.body;
+        const getFeedBacks = await this.userService.userFeedBackGet(
+          id,
+          feedBackId,
+        );
+
+        const { feedBacks } = getFeedBacks;
+
+        res.status(200).json(feedBacks);
       }
     } catch (err) {
       res.status(403).json(err);

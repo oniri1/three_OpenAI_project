@@ -1,28 +1,101 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { InterviewHistory } from "@/components/interviews/interviewHistory";
-import { IFeedBackMsgs } from "@/funcs/interface/interViewAi";
-import { useQuery } from "@tanstack/react-query";
+import { InterViewTotal } from "@/components/interviews/interviewTotal";
+import { IFeedBackMsgs, ITotalValue } from "@/funcs/interface/interViewAi";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import env from "@/envs";
-import { IGetUserFeedBacks } from "@/funcs/interface/I_User";
+
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 const { serverUrl } = env;
 
-interface IGetUserFeedBackData {
-  data: IGetUserFeedBacks;
-  status: number;
-}
+// interface IGetUserFeedBackData {
+//   data: IGetUserFeedBacks;
+//   status: number;
+// }
 
 export const FeedBack = (): JSX.Element => {
   const router = useRouter();
-  const [historyValues, setHistoryValues] = useState<IFeedBackMsgs[]>();
+  const [totalsValues, setTotalsValues] = useState<ITotalValue[]>([]);
+  const [historyValues, setHistoryValues] = useState<IFeedBackMsgs[]>([]);
+
+  const [isShowHistory, setIsShowHistory] = useState<boolean>(false);
+
+  const { mutate } = useMutation({
+    mutationKey: ["user", "feedback"],
+    mutationFn: async (id: number) => {
+      try {
+        const result = await axios.post(
+          `${serverUrl}/user/feedBack`,
+          {
+            feedBackId: id,
+          },
+          { withCredentials: true }
+        );
+
+        setTotalsValues((totals) => {
+          return totals.filter(({ feedBackId }) => {
+            return feedBackId === id;
+          });
+        });
+
+        const historyResult: IFeedBackMsgs[] = result.data;
+
+        setHistoryValues(historyResult);
+        setIsShowHistory(true);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+  });
+
+  const { refetch } = useQuery({
+    queryKey: ["user", "feedBacks"],
+    queryFn: async (): Promise<void> => {
+      try {
+        const { data, status } = await axios.get(
+          `${serverUrl}/user/feedBacks`,
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (status === 204) {
+          router.replace("/userProFile");
+        } else if (data) {
+          setTotalsValues(data);
+          setIsShowHistory(false);
+          setHistoryValues([]);
+        } else {
+          alert("err");
+          router.replace("/");
+        }
+        return data;
+      } catch (err) {
+        throw err;
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const totals: JSX.Element[] | undefined = useMemo(() => {
+    return totalsValues?.map(({ feedBackId, totalFeedBack }) => (
+      <InterViewTotal
+        key={feedBackId}
+        totalFeedBack={totalFeedBack}
+        feedBackId={feedBackId}
+        func={mutate}
+        activeTwoFunc={isShowHistory}
+        twoFunc={refetch}
+      ></InterViewTotal>
+    ));
+  }, [totalsValues, mutate]);
 
   const historys: JSX.Element[] | undefined = useMemo(() => {
-    return historyValues?.map(({ ai, user, feedBack }, idx) => (
+    return historyValues.map(({ ai, user, feedBack }, idx) => (
       <InterviewHistory
         key={idx}
         number={idx}
@@ -33,53 +106,9 @@ export const FeedBack = (): JSX.Element => {
     ));
   }, [historyValues]);
 
-  const { data } = useQuery({
-    queryKey: ["user", "feedBacks"],
-    queryFn: async (): Promise<IGetUserFeedBackData> => {
-      try {
-        const { data, status } = await axios.get(
-          `${serverUrl}/user/feedBacks`,
-          {
-            withCredentials: true,
-          }
-        );
-        return { data: data, status: status };
-      } catch (err) {
-        throw err;
-      }
-    },
-    refetchOnWindowFocus: false,
-  });
-
-  useEffect(() => {
-    if (data?.status === 204) {
-      router.replace("/userProFile");
-    } else {
-      setHistoryValues(data?.data.feedBacks);
-    }
-  }, [data, router, setHistoryValues]);
-
   return (
     <>
-      <section
-        id="feedback"
-        className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6"
-      >
-        <Image
-          className="inline rounded-full"
-          src="/hamsterInterviewer.jpeg"
-          alt="imgNotFound"
-          width={50}
-          height={50}
-          sizes="(max-width: 1000px) 30vw, 60vw"
-        />
-        <h2 className="inline text-lg md:text-xl font-semibold text-gray-800">
-          종합 피드백
-        </h2>
-        <div className="mt-1 md:mt-2">
-          <p className="text-gray-600">{data?.data.totalFeedBack}</p>
-        </div>
-      </section>
+      {totals}
       {historys}
     </>
   );

@@ -6,7 +6,7 @@ import { InterviewStart } from "@/components/interviews/interviewStart";
 import axios from "axios";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import env from "../envs";
 import { IUser } from "@/funcs/interface/I_User";
 
@@ -14,7 +14,6 @@ const { serverUrl } = env;
 
 export const MainPage = () => {
   const [name, setName] = useState<string>();
-  const router = useRouter();
 
   const { data, mutate } = useMutation({
     mutationKey: ["user", "check"],

@@ -6,3 +6,8 @@ export interface IMsgs {
 export interface IFeedBackMsgs extends IMsgs {
   feedBack?: string;
 }
+
+export interface ITotalValue {
+  feedBackId: number;
+  totalFeedBack: string;
+}
