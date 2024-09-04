@@ -1,7 +1,7 @@
 interface UserBase {
   name: string;
   email: string;
-  pw: string;
+  pw: string | undefined;
   intro: string;
 }
 

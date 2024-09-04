@@ -7,6 +7,7 @@ import { IUserData, IUserLogin, IUserAcsToken } from 'src/interfaces/i_User';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { FeedBack } from '../ai/mongoDB/feedback.schema';
+import { HashService } from '../hash/hash.service';
 
 @Injectable()
 export class UserService {
@@ -14,6 +15,7 @@ export class UserService {
     @InjectModel(FeedBack.name) private FeedBackModel: Model<FeedBack>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>, // User 엔티티에 대한 Repository 주입
+    private hashService: HashService,
   ) {}
 
   async userFeedBackGet(userId: number, feedBackId: number) {
@@ -46,6 +48,7 @@ export class UserService {
         });
 
         if (userData.email === userDataFromDb.email) {
+          userDataFromDb.pw = undefined;
           return userDataFromDb;
         } else {
           throw 'dont touch userData';
@@ -66,9 +69,11 @@ export class UserService {
           email: userData.email,
         });
 
+        const pw = await this.hashService.doHash(userData.pw);
+
         if (
           userData.email === userDataFromDb.email &&
-          userData.pw == userDataFromDb.pw
+          pw === userDataFromDb.pw
         ) {
           return userDataFromDb;
         } else {
@@ -87,7 +92,7 @@ export class UserService {
         user.name = name;
         user.email = email;
         user.intro = intro;
-        user.pw = pw;
+        user.pw = await this.hashService.doHash(pw);
 
         const saved = await this.userRepository.save(user);
         const userData: IUserData = await this.userRepository.findOneBy({
@@ -104,7 +109,16 @@ export class UserService {
 
   async userUpdate({ id, name, email, intro, pw }: IUserData) {
     try {
-      await this.userRepository.update({ id: id }, { name, email, intro, pw });
+      if (pw === undefined) {
+        await this.userRepository.update({ id: id }, { name, email, intro });
+      } else {
+        const hashedPw = await this.hashService.doHash(pw);
+
+        await this.userRepository.update(
+          { id: id },
+          { name, email, intro, pw: hashedPw },
+        );
+      }
 
       return await this.userRepository.findOneBy({
         id: id,

@@ -10,6 +10,7 @@ import { UserController } from '../user/user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entitiy';
 import { TokenService } from '../token/token.service';
+import { HashService } from '../hash/hash.service';
 
 @Module({
   imports: [
@@ -19,6 +20,12 @@ import { TokenService } from '../token/token.service';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AiController, UserController],
-  providers: [FeedBackService, AiService, UserService, TokenService],
+  providers: [
+    FeedBackService,
+    AiService,
+    UserService,
+    TokenService,
+    HashService,
+  ],
 })
 export class AiModule {}

@@ -16,12 +16,14 @@ import {
   IUserLogin,
 } from 'src/interfaces/i_User';
 import { TokenService } from '../token/token.service';
+import { HashService } from '../hash/hash.service';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly tokenService: TokenService,
+    private readonly hashService: HashService,
   ) {}
 
   @Get('check')

@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User } from 'src/entity/user.entitiy';
 import { FeedBack, FeedBackSchema } from '../ai/mongoDB/feedback.schema';
 import { TokenService } from '../token/token.service';
+import { HashService } from '../hash/hash.service';
 
 @Module({
   imports: [
@@ -32,6 +33,6 @@ import { TokenService } from '../token/token.service';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [UserController],
-  providers: [UserService, TokenService],
+  providers: [UserService, TokenService, HashService],
 })
 export class UserModule {}

@@ -61,6 +61,7 @@ export const UserProFile = (): JSX.Element => {
           name: name,
           email: email,
           intro: text,
+          pw: pw,
         },
         { withCredentials: true }
       );
@@ -166,7 +167,7 @@ export const UserProFile = (): JSX.Element => {
             type="text"
             id="password"
             className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
-            placeholder="hamster.ham.com"
+            placeholder="비밀번호 변경시 입력"
             autoComplete="current-password"
             value={pw ? pw : ""}
           />
