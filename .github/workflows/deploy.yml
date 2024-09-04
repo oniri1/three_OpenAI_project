@@ -1,0 +1,287 @@
+name: Deploy Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test_node:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{secrets.EC2_KEY}}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: test node
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          export NVM_DIR="$HOME/.nvm"
+          if [ -s "$NVM_DIR/nvm.sh" ]; then
+            . "$NVM_DIR/nvm.sh"
+          else
+          echo "nvm.sh not found"
+          exit 1
+          fi
+
+          nvm -v
+          nvm use --lts
+          node -v
+          npm -v'
+
+  test_mysql:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{secrets.EC2_KEY}}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: test mysql
+        run: |
+          ssh ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}} '
+          sudo service mysql status'
+
+      - name: test mysql user
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          mysql -u ${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "SHOW DATABASES;"'
+
+  test_mongo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{secrets.EC2_KEY}}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: check mongo
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          sudo service mongod status'
+
+      - name: test mongo user
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          mongosh -u ${{ secrets.MONGO_USER }} -p ${{ secrets.MONGO_PASSWORD }} \
+          --authenticationDatabase admin -eval "db.adminCommand({ listDatabases:1 })"'
+
+  reset_dir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{secrets.EC2_KEY}}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: ReMake dir
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            rm -rf /var/www/threeOpenAi
+            mkdir /var/www/threeOpenAi
+
+  deploy_front:
+    runs-on: ubuntu-latest
+    needs:
+      - reset_dir
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{secrets.EC2_KEY}}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: Make a Env
+        working-directory: ./front
+        run: |
+          ${{ secrets.FRONT_ENV }}
+
+      - name: Install Dependencies of Front
+        working-directory: ./front
+        run: npm i
+
+      - name: Build Front
+        working-directory: ./front
+        run: npm run build
+
+      - name: Delete src folder
+        working-directory: ./front
+        run: |
+          if [ -d "src" ]; then rm -rf src; fi
+
+      - name: Copy Files to EC2
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            mkdir /var/www/threeOpenAi/front'
+          rsync -avz -e "ssh" ./front/ ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
+
+  deploy_back:
+    runs-on: ubuntu-latest
+    needs:
+      - test_node
+      - test_mysql
+      - test_mongo
+      - reset_dir
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{secrets.EC2_KEY}}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: Make a Folder
+        working-directory: ./back
+        run: |
+          ${{secrets.BACKEND_ENV}}
+
+      - name: Install Dependencies of Back
+        working-directory: ./back
+        run: npm i
+
+      - name: Build Back
+        working-directory: ./back
+        run: npm run build
+
+      - name: Delete src folder
+        working-directory: ./back
+        run: |
+          if [ -d "src" ]; then rm -rf src; fi
+
+      - name: Copy Files to EC2
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            mkdir /var/www/threeOpenAi/back'
+          rsync -avz -e "ssh" ./back/ ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
+
+  restart_nginx:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy_back
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{secrets.EC2_KEY}}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: Restart NginX
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+          sudo service nginx restart'
+
+  start_server:
+    runs-on: ubuntu-latest
+    needs:
+      - restart_nginx
+      - deploy_back
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{secrets.EC2_KEY}}
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: Start server
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            export NVM_DIR="$HOME/.nvm"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+              . "$NVM_DIR/nvm.sh"
+            else 
+              echo "nvm.sh not found"
+              exit 1
+            fi
+
+            nvm use --lts
+            
+            npm install -g pm2
+            pm2 stop all
+            pm2 start /var/www/threeOpenAi/back/dist/main.js --name OpenAiServerNest
+            cd /var/www/threeOpenAi/front
+            pm2 start npm --name "OpenAiNext" -- start'
