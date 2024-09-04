@@ -14,7 +14,6 @@ import {
   IUserData,
   IUserCreate,
   IUserLogin,
-  IUserAcsToken,
 } from 'src/interfaces/i_User';
 import { TokenService } from '../token/token.service';
 
@@ -29,12 +28,27 @@ export class UserController {
   async userCheck(@Req() req: Request, @Res() res: Response) {
     console.log('get/user/check');
     try {
-      const userData = await this.userService.userCheck(req.session?.userData);
-      if (!userData) {
-        console.log('세션없음');
-        res.status(HttpStatus.NO_CONTENT).send();
-      } else {
-        res.status(HttpStatus.OK).json(userData);
+      if (req.session.userData | req.cookies.rsfToken) {
+        const refreshToken = req.cookies.rsfToken;
+
+        const acsTokenDecoded = this.tokenService.acsTokenCheck(
+          req.session.userData,
+          refreshToken,
+        );
+
+        const userData = await this.userService.userCheck(acsTokenDecoded);
+        if (!userData) {
+          throw 'not found user';
+        } else {
+          const { email } = userData as IUserData;
+
+          if (acsTokenDecoded.reAcsToken) {
+            const acsToken = this.tokenService.acsTokenCreate({ email: email });
+            req.session.userData = acsToken;
+          }
+
+          res.status(HttpStatus.OK).json(userData);
+        }
       }
     } catch (err) {
       console.log(err);
@@ -46,25 +60,36 @@ export class UserController {
   async userFeedBacks(@Req() req: Request, @Res() res: Response) {
     console.log('get/user/feedBacks');
     try {
-      const userData: IUserData = req.session?.userData;
+      if (req.session.userData | req.cookies.rsfToken) {
+        const refreshToken = req.cookies.rsfToken;
 
-      const userCheck = await this.userService.userCheck(userData);
-      if (!userCheck) {
-        res.status(HttpStatus.NO_CONTENT).send();
-        return;
-      } else {
-        const { id } = userCheck as IUserData;
-        const getFeedBacks = await this.userService.userFeedBacksGet(id);
+        const acsTokenDecoded = this.tokenService.acsTokenCheck(
+          req.session.userData,
+          refreshToken,
+        );
 
-        console.log(getFeedBacks);
-        const result = getFeedBacks.map(({ feedBackId, totalFeedBack }) => {
-          return { feedBackId, totalFeedBack };
-        });
+        const userCheck = await this.userService.userCheck(acsTokenDecoded);
+        if (!userCheck) {
+          throw 'userCheck undefined';
+        } else {
+          const { id, email } = userCheck as IUserData;
+          const getFeedBacks = await this.userService.userFeedBacksGet(id);
 
-        res.status(200).json(result);
+          const result = getFeedBacks.map(({ feedBackId, totalFeedBack }) => {
+            return { feedBackId, totalFeedBack };
+          });
+
+          if (acsTokenDecoded.reAcsToken) {
+            const acsToken = this.tokenService.acsTokenCreate({ email: email });
+            req.session.userData = acsToken;
+          }
+
+          res.status(200).json(result);
+        }
       }
     } catch (err) {
-      res.status(403).json(err);
+      console.log(err);
+      res.status(HttpStatus.NO_CONTENT).send();
     }
   }
 
