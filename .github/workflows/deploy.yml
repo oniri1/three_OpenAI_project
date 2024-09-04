@@ -122,7 +122,8 @@ jobs:
       - name: ReMake dir
         run: |
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
-            rm -rf /var/www/threeOpenAi
+            cd /var/www
+            if [ -d "threeOpenAi" ]; then rm -rf /var/www/threeOpenAi; fi
             mkdir /var/www/threeOpenAi
 
   deploy_front:
