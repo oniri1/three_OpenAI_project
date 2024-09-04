@@ -45,7 +45,8 @@ export const Login = () => {
       router.replace("/");
     },
     onError: (err) => {
-      alert(err);
+      console.log(err);
+      alert("이메일 중복");
     },
   });
 
@@ -65,7 +66,8 @@ export const Login = () => {
       router.replace("/");
     },
     onError: (err) => {
-      alert(err);
+      console.log(err);
+      alert("아이디 패스워드 입력 오류");
     },
   });
 
@@ -147,6 +149,31 @@ export const Login = () => {
     <section
       id="profile"
       className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-4 md:mb-6 animate-slide-up"
+      onKeyUp={async ({ key }: React.KeyboardEvent<HTMLElement>) => {
+        if (key === "Enter") {
+          try {
+            if (!isRegist) {
+              if (pw && email) {
+                login.mutate();
+              } else {
+                throw "로그인 내용을 제대로 입력하세요";
+              }
+            } else {
+              if (pw !== pwCk) {
+                throw "패스워드 입력이 잘못되었습니다.";
+              } else {
+                if (name && pw && email && text) {
+                  regist.mutate();
+                } else {
+                  throw "회원가입 내용을 제대로 입력하세요";
+                }
+              }
+            }
+          } catch (err) {
+            alert(err);
+          }
+        }
+      }}
     >
       <h2 className="text-lg md:text-xl font-semibold text-gray-800">
         간단하게 로그인 및 회원가입 해보세요!
