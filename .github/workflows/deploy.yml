@@ -175,19 +175,6 @@ jobs:
           rsync -avz -e "ssh" ./front/package.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
           rsync -avz -e "ssh" ./front/node_modules ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
 
-          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
-            export NVM_DIR="$HOME/.nvm"
-            if [ -s "$NVM_DIR/nvm.sh" ]; then
-              . "$NVM_DIR/nvm.sh"
-            else
-              echo "nvm.sh not found"
-              exit 1
-            fi
-
-            nvm use --lts
-            cd /var/www/threeOpenAi/front
-            npm i --production'
-
   deploy_back:
     runs-on: ubuntu-latest
     needs:
