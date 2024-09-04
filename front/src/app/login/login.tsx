@@ -21,6 +21,7 @@ export const Login = () => {
 
   const [email, setEmail] = useState<string>();
   const [pw, setPw] = useState<string>();
+  const [pwCk, setPwCk] = useState<string>();
 
   const [name, setName] = useState<string>();
   const [text, setText] = useState<string>();
@@ -96,6 +97,13 @@ export const Login = () => {
     [setPw]
   );
 
+  const pwCkHandleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setPwCk(event.target.value);
+    },
+    [setPwCk]
+  );
+
   const registerBtnHandle = useCallback(() => {
     setIsRegist((isRegist) => {
       return !isRegist;
@@ -143,78 +151,116 @@ export const Login = () => {
       <h2 className="text-lg md:text-xl font-semibold text-gray-800">
         간단하게 로그인 및 회원가입 해보세요!
       </h2>
+
       <div className="mt-2 md:mt-4 space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-gray-700 font-medium">
-            Email:
-          </label>
-          <input
-            onChange={emailHandleChange}
-            maxLength={100}
-            type="email"
-            id="email"
-            className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
-            placeholder="hamster.ham.com"
-            value={email ? email : ""}
-          />
-          <span className="text-gray-400">{email ? email.length : 0}/100</span>
-        </div>
+        <form action="">
+          <div>
+            <label htmlFor="email" className="block text-gray-700 font-medium">
+              Email:
+            </label>
+            <input
+              onChange={emailHandleChange}
+              maxLength={100}
+              type="email"
+              id="email"
+              autoComplete="username"
+              className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
+              placeholder="hamster.ham.com"
+              value={email ? email : ""}
+            />
+            <span className="text-gray-400">
+              {email ? email.length : 0}/100
+            </span>
+          </div>
 
-        <div>
-          <label htmlFor="password" className="block text-gray-700 font-medium">
-            PassWord:
-          </label>
-          <input
-            onChange={pwHandleChange}
-            maxLength={100}
-            type="text"
-            id="password"
-            className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
-            placeholder="1q2w3e4r!"
-            autoComplete="current-password"
-            value={pw ? pw : ""}
-          />
-          <span className="text-gray-400">{pw ? pw.length : 0}/100</span>
-        </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-gray-700 font-medium"
+            >
+              PassWord:
+            </label>
+            <input
+              onChange={pwHandleChange}
+              maxLength={100}
+              type="password"
+              id="password"
+              className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
+              placeholder="1q2w3e4r!"
+              autoComplete="current-password"
+              value={pw ? pw : ""}
+            />
+            <span className="text-gray-400">{pw ? pw.length : 0}/100</span>
+          </div>
 
-        {isRegist && (
-          <>
-            <div>
-              <label htmlFor="name" className="block text-gray-700 font-medium">
-                Name:
-              </label>
-              <input
-                onChange={nameHandleChange}
-                maxLength={15}
-                type="text"
-                id="name"
-                className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
-                placeholder="hamster"
-                value={name ? name : ""}
-              />
-              <span className="text-gray-400">{name ? name.length : 0}/15</span>
-            </div>
-            <div>
-              <label
-                htmlFor="resume"
-                className="block text-gray-700 font-medium"
-              >
-                자신의 소개를 간단하게 적어보세요.
-              </label>
-              <textarea
-                ref={textareaRef}
-                onChange={textHandleChange}
-                id="resume"
-                maxLength={500}
-                className="w-[100%] border-[1.5px] border-gray-300 rounded-lg text-gray-600 overflow-hidden resize-none"
-                value={text ? text : ""}
-              />
-              <span className="text-gray-400">
-                {text ? text.length : 0}/500
-              </span>
-            </div>
-          </>
-        )}
+          {isRegist && (
+            <>
+              <div>
+                <label
+                  htmlFor="passwordCk"
+                  className="block text-gray-700 font-medium"
+                >
+                  PassWord-Check:
+                </label>
+                <input
+                  onChange={pwCkHandleChange}
+                  maxLength={100}
+                  type="password"
+                  id="passwordCk"
+                  className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
+                  placeholder="1q2w3e4r!"
+                  autoComplete="current-password"
+                  value={pwCk ? pwCk : ""}
+                />
+                <span className="text-gray-400">
+                  {pwCk ? pwCk.length : 0}/100
+                </span>
+              </div>
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-gray-700 font-medium"
+                >
+                  Name:
+                </label>
+                <input
+                  onChange={nameHandleChange}
+                  maxLength={15}
+                  type="text"
+                  autoComplete="username"
+                  id="name"
+                  className="w-full p-2 border border-gray-300 rounded-lg text-gray-600"
+                  placeholder="hamster"
+                  value={name ? name : ""}
+                />
+                <span className="text-gray-400">
+                  {name ? name.length : 0}/15
+                </span>
+              </div>
+              <div>
+                <label
+                  htmlFor="resume"
+                  className="block text-gray-700 font-medium"
+                >
+                  자신의 소개를 간단하게 적어보세요.
+                </label>
+                <textarea
+                  ref={textareaRef}
+                  onChange={textHandleChange}
+                  id="resume"
+                  maxLength={500}
+                  autoComplete="username"
+                  className="w-[100%] border-[1.5px] border-gray-300 rounded-lg text-gray-600 overflow-hidden resize-none"
+                  value={text ? text : ""}
+                />
+                <span className="text-gray-400">
+                  {text ? text.length : 0}/500
+                </span>
+              </div>
+            </>
+          )}
+        </form>
+
         {isRegist ? (
           <button
             onClick={async () => {
@@ -246,10 +292,14 @@ export const Login = () => {
           <button
             onClick={async () => {
               try {
-                if (name && pw && email && text) {
-                  regist.mutate();
+                if (pw !== pwCk) {
+                  throw "패스워드 입력이 잘못되었습니다.";
                 } else {
-                  throw "회원가입 내용을 제대로 입력하세요";
+                  if (name && pw && email && text) {
+                    regist.mutate();
+                  } else {
+                    throw "회원가입 내용을 제대로 입력하세요";
+                  }
                 }
               } catch (err) {
                 alert(err);

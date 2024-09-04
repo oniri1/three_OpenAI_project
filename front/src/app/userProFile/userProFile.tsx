@@ -102,7 +102,6 @@ export const UserProFile = (): JSX.Element => {
 
   useEffect(() => {
     if (data) {
-      console.log(data.status);
       if (data.status === 200) {
         const { name, email, intro, pw } = data?.data as IUser;
 
