@@ -172,6 +172,7 @@ jobs:
             mkdir /var/www/threeOpenAi/front'
           rsync -avz -e "ssh" ./front/.next ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
           rsync -avz -e "ssh" ./front/public ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
+          rsync -avz -e "ssh" ./front/package-lock.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
           rsync -avz -e "ssh" ./front/package.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
           rsync -avz -e "ssh" ./front/node_modules ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
 
@@ -225,6 +226,7 @@ jobs:
             mkdir /var/www/threeOpenAi/back'
           rsync -avz -e "ssh" ./back/dist ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
           rsync -avz -e "ssh" ./back/.env ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
+          rsync -avz -e "ssh" ./back/package-lock.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
           rsync -avz -e "ssh" ./back/package.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
           rsync -avz -e "ssh" ./back/node_modules ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
 
