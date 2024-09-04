@@ -28,7 +28,7 @@ export class UserController {
   async userCheck(@Req() req: Request, @Res() res: Response) {
     console.log('get/user/check');
     try {
-      if (req.session.userData | req.cookies.rsfToken) {
+      if (req.session.userData || req.cookies.rsfToken) {
         const refreshToken = req.cookies.rsfToken;
 
         const acsTokenDecoded = this.tokenService.acsTokenCheck(
@@ -37,6 +37,9 @@ export class UserController {
         );
 
         const userData = await this.userService.userCheck(acsTokenDecoded);
+
+        console.log(userData);
+
         if (!userData) {
           throw 'not found user';
         } else {
@@ -49,9 +52,19 @@ export class UserController {
 
           res.status(HttpStatus.OK).json(userData);
         }
+      } else {
+        throw 'no Token';
       }
     } catch (err) {
       console.log(err);
+      req.session.userData = undefined;
+      res.cookie('rsfToken', '', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        path: '/',
+        expires: new Date(0), // 과거 날짜로 설정하여 즉시 삭제
+      });
       res.status(HttpStatus.NO_CONTENT).send();
     }
   }
@@ -60,7 +73,7 @@ export class UserController {
   async userFeedBacks(@Req() req: Request, @Res() res: Response) {
     console.log('get/user/feedBacks');
     try {
-      if (req.session.userData | req.cookies.rsfToken) {
+      if (req.session.userData || req.cookies.rsfToken) {
         const refreshToken = req.cookies.rsfToken;
 
         const acsTokenDecoded = this.tokenService.acsTokenCheck(
@@ -86,6 +99,8 @@ export class UserController {
 
           res.status(200).json(result);
         }
+      } else {
+        throw 'not Token';
       }
     } catch (err) {
       console.log(err);
@@ -97,7 +112,7 @@ export class UserController {
   async userFeedBack(@Req() req: Request, @Res() res: Response) {
     console.log('post/user/feedBack');
     try {
-      if (req.session.userData | req.cookies.rsfToken) {
+      if (req.session.userData || req.cookies.rsfToken) {
         const refreshToken = req.cookies.rsfToken;
 
         const acsTokenDecoded = this.tokenService.acsTokenCheck(
@@ -126,7 +141,7 @@ export class UserController {
           res.status(200).json(feedBacks);
         }
       } else {
-        throw 'you are not login';
+        throw 'not Token';
       }
     } catch (err) {
       console.log(err);
@@ -248,16 +263,6 @@ export class UserController {
       path: '/',
       expires: new Date(0), // 과거 날짜로 설정하여 즉시 삭제
     });
-    res.status(HttpStatus.OK).json();
-  }
-
-  @Post('test')
-  checkCookie(@Req() req: Request, @Res() res: Response) {
-    const refreshToken = req.cookies.rsfToken;
-    const acsToken = req.cookies.userData;
-    console.log(refreshToken);
-    console.log(acsToken);
-
     res.status(HttpStatus.OK).json();
   }
 }

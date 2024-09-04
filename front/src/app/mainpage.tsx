@@ -32,7 +32,6 @@ export const MainPage = () => {
     mutate();
   }, [mutate]);
 
-  //로그인 미확인 시
   useEffect(() => {
     if (data) {
       setName(data?.data.name);

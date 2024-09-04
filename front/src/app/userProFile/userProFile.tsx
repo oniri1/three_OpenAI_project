@@ -101,7 +101,8 @@ export const UserProFile = (): JSX.Element => {
 
   useEffect(() => {
     if (data) {
-      if (data?.status === 200) {
+      console.log(data.status);
+      if (data.status === 200) {
         const { name, email, intro, pw } = data?.data as IUser;
 
         setName(name);
@@ -111,6 +112,8 @@ export const UserProFile = (): JSX.Element => {
       } else {
         router.replace("/login");
       }
+    } else {
+      router.replace("/login");
     }
   }, [data, setName, setEmail, setText, setPw, router]);
 

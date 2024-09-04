@@ -34,7 +34,7 @@ export class AiController {
   ) {
     console.log('post/ai/doInterView');
     try {
-      if (req.session.userData | req.cookies.rsfToken) {
+      if (req.session.userData || req.cookies.rsfToken) {
         const refreshToken = req.cookies.rsfToken;
 
         const acsTokenDecoded = this.tokenService.acsTokenCheck(
@@ -84,6 +84,7 @@ export class AiController {
 
         res.json({ msg: await this.aiService.doInterView(interViewMsg) });
       } else {
+        throw 'not Token';
       }
     } catch (err) {
       res.status(HttpStatus.NO_CONTENT).send();
@@ -98,7 +99,7 @@ export class AiController {
   ) {
     console.log('post/ai/feedBackSave');
     try {
-      if (req.session.userData | req.cookies.rsfToken) {
+      if (req.session.userData || req.cookies.rsfToken) {
         const refreshToken = req.cookies.rsfToken;
 
         const acsTokenDecoded = this.tokenService.acsTokenCheck(

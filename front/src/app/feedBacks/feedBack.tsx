@@ -115,7 +115,7 @@ export const FeedBack = (): JSX.Element => {
         twoFunc={refetch}
       ></InterViewTotal>
     ));
-  }, [totalsValues, mutate]);
+  }, [totalsValues, mutate, refetch, isShowHistory]);
 
   const historys: JSX.Element[] | undefined = useMemo(() => {
     return historyValues.map(({ ai, user, feedBack }, idx) => (
