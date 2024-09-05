@@ -308,6 +308,7 @@ jobs:
             
             npm install -g pm2
             pm2 stop all
-            pm2 start /var/www/threeOpenAi/back/dist/main.js --name OpenAiServerNest
+            cd /var/www/threeOpenAi/back
+            pm2 start npm --name "OpenAiNestServer" -- start'
             cd /var/www/threeOpenAi/front
             pm2 start npm --name "OpenAiNext" -- start'
