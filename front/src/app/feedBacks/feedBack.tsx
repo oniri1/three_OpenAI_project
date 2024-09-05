@@ -70,7 +70,7 @@ export const FeedBack = (): JSX.Element => {
   useEffect(() => {
     if (data) {
       if (data?.status !== 200) {
-        router.replace("/login");
+        router.replace("/openAiProject/login");
       }
     }
   }, [data, router]);

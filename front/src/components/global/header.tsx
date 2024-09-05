@@ -15,7 +15,7 @@ export const Header = (): JSX.Element => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const reloadHandler = useCallback(() => {
-    router.replace("/logouting");
+    router.replace("/openAiProject/logouting");
   }, [router]);
 
   const { data, mutate } = useMutation({
@@ -98,7 +98,7 @@ export const Header = (): JSX.Element => {
         ) : (
           <div
             onClick={() => {
-              router.replace("/login");
+              router.replace("/openAiProject/login");
             }}
             className="text-xl md:text-xl font-bold text-blue-600 cursor-pointer hover:scale-105"
           >
