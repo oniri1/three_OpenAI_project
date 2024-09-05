@@ -25,7 +25,7 @@ export const InterviewSaveBtn = ({ serverValues }: IProps): JSX.Element => {
       );
     },
     onSuccess: () => {
-      router.replace("/openAiProject/feedBacks");
+      router.replace("/feedBacks");
     },
     onError: (err) => {
       alert(err);

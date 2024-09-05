@@ -42,7 +42,7 @@ export const Login = () => {
       );
     },
     onSuccess: () => {
-      router.replace("/openAiProject");
+      router.replace("/");
     },
     onError: (err) => {
       console.log(err);
@@ -63,7 +63,7 @@ export const Login = () => {
       );
     },
     onSuccess: () => {
-      router.replace("/openAiProject");
+      router.replace("/");
     },
     onError: (err) => {
       console.log(err);
@@ -133,7 +133,7 @@ export const Login = () => {
 
   useEffect(() => {
     if (data?.status === 200) {
-      router.replace("/openAiProject");
+      router.replace("/");
     }
   }, [data, router]);
 

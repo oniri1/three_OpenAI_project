@@ -67,7 +67,7 @@ export const UserProFile = (): JSX.Element => {
       );
     },
     onSuccess: () => {
-      router.replace("/openAiProject");
+      router.replace("/");
     },
     onError: (err) => {
       alert(err);
@@ -110,10 +110,10 @@ export const UserProFile = (): JSX.Element => {
         setText(intro);
         setPw(pw);
       } else {
-        router.replace("/openAiProject/login");
+        router.replace("/login");
       }
     } else {
-      router.replace("/openAiProject/login");
+      router.replace("/login");
     }
   }, [data, setName, setEmail, setText, setPw, router]);
 

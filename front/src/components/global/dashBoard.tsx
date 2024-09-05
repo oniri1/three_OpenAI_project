@@ -25,7 +25,7 @@ export const Dashboard = ({ name }: IProps): JSX.Element => {
         {name ? (
           <></>
         ) : (
-          <Link href={"/openAiProject/userProFile"}>
+          <Link href={"/userProFile"}>
             <button className="mt-2 md:mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 w-full md:w-auto">
               가입하기
             </button>

@@ -6,7 +6,7 @@ const NotFound = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/openAiProject");
+    router.replace("/");
   }, [router]);
 
   return <div>404</div>;
