@@ -19,9 +19,11 @@ export const Interview = (): JSX.Element => {
   const [historyValues, setHistoryValues] = useState<IMsgs[]>([]);
 
   const historys: JSX.Element[] | undefined = useMemo(() => {
-    return historyValues?.map(({ ai, user }, idx) => {
+    const ary = historyValues?.map(({ ai, user }, idx) => {
       return <InterviewHistory key={idx} number={idx} ai={ai} user={user} />;
     });
+
+    return ary.reverse();
   }, [historyValues]);
   //
 

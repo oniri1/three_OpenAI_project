@@ -20,13 +20,17 @@ export const InterviewHistory = ({
         질문 .{number + 1}
       </h2>
       <div className="mt-2 md:mt-4">
-        <h3 className="text-md md:text-lg font-semibold text-black">
+        {feedBack && (
+          <p className="text-md md:text-lg font-semibold text-red-500">
+            피드백 : {feedBack}
+          </p>
+        )}
+        <h3 className="text-md md:text-lg font-semibold text-blue-700">
           질문 내용 : {ai}
         </h3>
         <h3 className="text-md md:text-lg font-semibold text-black">
           사용자 답변 : {user}
         </h3>
-        {feedBack && <p className="text-gray-500">피드백 : {feedBack}</p>}
       </div>
     </section>
   );
