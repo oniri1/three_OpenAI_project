@@ -181,7 +181,7 @@ jobs:
 
             nvm use --lts
             cd /var/www/threeOpenAi/front
-            npm ci --production'
+            npm install --production --maxsockets=1'
 
   deploy_back:
     runs-on: ubuntu-latest
@@ -242,7 +242,7 @@ jobs:
 
             nvm use --lts
             cd /var/www/threeOpenAi/back
-            npm ci --production'
+            npm install --production --maxsockets=1'
 
   restart_nginx:
     runs-on: ubuntu-latest
