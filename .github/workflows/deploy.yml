@@ -168,6 +168,7 @@ jobs:
           rsync -avz -e "ssh" ./front/.next ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
           rsync -avz -e "ssh" ./front/public ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
           rsync -avz -e "ssh" ./front/package.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
+          rsync -avz -e "ssh" ./front/package-lock.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/front
 
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
             export NVM_DIR="$HOME/.nvm"
@@ -180,7 +181,7 @@ jobs:
 
             nvm use --lts
             cd /var/www/threeOpenAi/front
-            npm i --production'
+            npm ci --production'
 
   deploy_back:
     runs-on: ubuntu-latest
@@ -228,6 +229,7 @@ jobs:
           rsync -avz -e "ssh" ./back/dist ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
           rsync -avz -e "ssh" ./back/.env ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
           rsync -avz -e "ssh" ./back/package.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
+          rsync -avz -e "ssh" ./back/package-lock.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
 
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
             export NVM_DIR="$HOME/.nvm"
@@ -240,7 +242,7 @@ jobs:
 
             nvm use --lts
             cd /var/www/threeOpenAi/back
-            npm i --production'
+            npm ci --production'
 
   restart_nginx:
     runs-on: ubuntu-latest
