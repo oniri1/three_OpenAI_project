@@ -14,7 +14,7 @@ export const InterviewStart = (): JSX.Element => {
           <h3 className="text-md md:text-lg font-medium text-black">
             지금 면접을 시작해보세요!
           </h3>
-          <Link href={"/interview"}>
+          <Link href={"/openAiProject/interview"}>
             <button className="mt-2 md:mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 w-full md:w-auto">
               시작하기
             </button>
