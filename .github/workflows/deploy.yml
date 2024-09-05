@@ -181,7 +181,7 @@ jobs:
 
             nvm use --lts
             cd /var/www/threeOpenAi/front
-            npm install --production --maxsockets=1'
+            npm i --production'
 
   deploy_back:
     runs-on: ubuntu-latest
@@ -230,6 +230,7 @@ jobs:
           rsync -avz -e "ssh" ./back/.env ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
           rsync -avz -e "ssh" ./back/package.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
           rsync -avz -e "ssh" ./back/package-lock.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
+          rsync -avz -e "ssh" ./back/tsconfig.json ${{ secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/threeOpenAi/back
 
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
             export NVM_DIR="$HOME/.nvm"
@@ -242,7 +243,7 @@ jobs:
 
             nvm use --lts
             cd /var/www/threeOpenAi/back
-            npm install --production --maxsockets=1'
+            npm i --production'
 
   restart_nginx:
     runs-on: ubuntu-latest
@@ -310,5 +311,6 @@ jobs:
             pm2 stop all
             cd /var/www/threeOpenAi/back
             pm2 start npm --name "OpenAiNestServer" -- start'
-            cd /var/www/threeOpenAi/front
+            cd ..
+            cd front
             pm2 start npm --name "OpenAiNext" -- start'
