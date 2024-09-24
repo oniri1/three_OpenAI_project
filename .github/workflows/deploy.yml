@@ -309,7 +309,6 @@ jobs:
             nvm use --lts
             
             npm install -g pm2
-            pm2 stop all
             cd /var/www/threeOpenAi/back
             pm2 start npm --name "OpenAiNestServer" -- start
             cd /var/www/threeOpenAi/front
